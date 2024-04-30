@@ -68,4 +68,4 @@ export const authOptions: NextAuthOptions = {
 }
 
 // helper to get session
-export const getAuthSession = () => getServerSession()
+export const getAuthSession = () => getServerSession(authOptions)
