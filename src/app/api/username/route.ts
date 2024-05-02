@@ -1,6 +1,6 @@
 import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { UsernameValidator } from '@/lib/validators/username'
+import { UserNameValidator } from '@/lib/validators/username'
 import { z } from 'zod'
 
 export async function PATCH(req: Request) {
@@ -13,7 +13,7 @@ export async function PATCH(req: Request) {
 
     const body = await req.json()
 
-    const { name } = UsernameValidator.parse(body)
+    const { name } = UserNameValidator.parse(body)
 
     const username = await db.user.findFirst({
       where: {
