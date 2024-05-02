@@ -16,9 +16,7 @@ const Layout = async ({
   const session = await getAuthSession()
 
   const subreddit = await db.subreddit.findFirst({
-    where: {
-      name: slug,
-    },
+    where: { name: slug },
     include: {
       posts: {
         include: {
@@ -66,7 +64,7 @@ const Layout = async ({
               <p className='font-semibold py-3'>About r/{subreddit.name}</p>
             </div>
 
-            <dl className='divide-y divide-gray-100 px-6 py-4 text-sm leading-6, bg-white'>
+            <dl className='divide-y divide-gray-100 px-6 py-4 text-sm leading-6 bg-white'>
               <div className='flex justify-between gap-x-4 py-3'>
                 <dt className='text-gray-500'>Created</dt>
                 <dd className='text-gray-700'>
@@ -75,9 +73,7 @@ const Layout = async ({
                   </time>
                 </dd>
               </div>
-
               <div className='flex justify-between gap-x-4 py-3'>
-                {' '}
                 <dt className='text-gray-500'>Members</dt>
                 <dd className='text-gray-700'>
                   <div className='text-gray-900'>{memberCount}</div>
@@ -85,7 +81,7 @@ const Layout = async ({
               </div>
               {subreddit.creatorId === session?.user.id ? (
                 <div className='flex justify-between gap-x-4 py-3'>
-                  <p className='text-gray-500'>You created this community</p>
+                  <p>You created this community</p>
                 </div>
               ) : null}
 
@@ -96,6 +92,7 @@ const Layout = async ({
                   subredditName={subreddit.name}
                 />
               ) : null}
+
               <Link
                 className={buttonVariants({
                   variant: 'outline',
@@ -112,4 +109,5 @@ const Layout = async ({
     </div>
   )
 }
+
 export default Layout

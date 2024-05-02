@@ -27,7 +27,7 @@ export async function PATCH(req: Request) {
       },
     })
 
-    const post = await db.post.findFirst({
+    const post = await db.post.findUnique({
       where: {
         id: postId,
       },
@@ -83,8 +83,7 @@ export async function PATCH(req: Request) {
           createdAt: post.createdAt,
         }
 
-        // hset
-        await redis.hset(`post:${postId}`, cachePayload)
+        await redis.hset(`post: ${postId}`, cachePayload)
       }
 
       return new Response('OK')
@@ -115,7 +114,7 @@ export async function PATCH(req: Request) {
         createdAt: post.createdAt,
       }
 
-      await redis.hset(`post:${postId}`, cachePayload)
+      await redis.hset(`post: ${postId}`, cachePayload)
     }
     return new Response('OK')
   } catch (error) {

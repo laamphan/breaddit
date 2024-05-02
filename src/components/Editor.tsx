@@ -65,6 +65,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
               endpoint: '/api/link',
             },
           },
+
           image: {
             class: ImageTool,
             config: {
@@ -82,7 +83,6 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
               },
             },
           },
-
           list: List,
           code: Code,
           inlineCode: InlineCode,
@@ -94,7 +94,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
   }, [])
 
   useEffect(() => {
-    if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
       setIsMounted(true)
     }
   }, [])
@@ -120,7 +120,6 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
         _titleRef.current?.focus()
       }, 0)
     }
-
     if (isMounted) {
       init()
 
@@ -146,7 +145,6 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
       const { data } = await axios.post('/api/subreddit/post/create', payload)
       return data
     },
-
     onError: () => {
       return toast({
         title: 'Something went wrong',
@@ -154,6 +152,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
         variant: 'destructive',
       })
     },
+
     onSuccess: () => {
       const newPathname = pathname.split('/').slice(0, -1).join('/')
       router.push(newPathname)
@@ -185,7 +184,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
   const { ref: titleRef, ...rest } = register('title')
 
   return (
-    <div className='w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200'>
+    <div className='w-full bg-zinc-50 rounded-lg border-zinc-200'>
       <form
         id='subreddit-post-form'
         className='w-fit'
@@ -204,7 +203,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
             className='w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none'
           />
 
-          <div id='editor' className='min-h-[500px]'></div>
+          <div id='editor' className='min-h-[500]' />
         </div>
       </form>
     </div>

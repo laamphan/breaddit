@@ -6,7 +6,7 @@ import PostVoteClient from './PostVoteClient'
 interface PostVoteServerProps {
   postId: string
   initialVotesAmt?: number
-  initialVote?: VoteType | null
+  initialVote: VoteType | null
   getData?: () => Promise<(Post & { votes: Vote[] }) | null>
 }
 

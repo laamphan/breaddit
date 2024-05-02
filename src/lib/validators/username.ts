@@ -1,11 +1,11 @@
 import { z } from 'zod'
 
-export const UsernameValidator = z.object({
+export const UserNameValidator = z.object({
   name: z
     .string()
     .min(3)
     .max(32)
-    .regex(/^[a-zA-Z0-9]+$/),
+    .regex(/^[a-zA-Z0-9_]+$/),
 })
 
-export type UsernameRequest = z.infer<typeof UsernameValidator>
+export type UsernameRequest = z.infer<typeof UserNameValidator>

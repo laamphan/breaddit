@@ -2,7 +2,7 @@
 
 import { useCustomToast } from '@/hooks/use-custom-toast'
 import { toast } from '@/hooks/use-toast'
-import { CommentRequest } from '@/lib/validators/comments'
+import { CommentRequest } from '@/lib/validators/comment'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
@@ -28,10 +28,10 @@ const CreateComment: FC<CreateCommentProps> = ({ postId, replyToId }) => {
         text,
         replyToId,
       }
-
       const { data } = await axios.patch(`/api/subreddit/post/comment`, payload)
       return data
     },
+
     onError: (err) => {
       if (err instanceof AxiosError) {
         if (err.response?.status === 401) {
@@ -45,6 +45,7 @@ const CreateComment: FC<CreateCommentProps> = ({ postId, replyToId }) => {
         variant: 'destructive',
       })
     },
+
     onSuccess: () => {
       router.refresh()
       setInput('')

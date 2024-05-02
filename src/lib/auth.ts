@@ -1,8 +1,8 @@
+import { db } from '@/lib/db'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { nanoid } from 'nanoid'
-import { getServerSession, NextAuthOptions } from 'next-auth'
+import { NextAuthOptions, getServerSession } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
-import { db } from './db'
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
@@ -30,6 +30,7 @@ export const authOptions: NextAuthOptions = {
 
       return session
     },
+
     async jwt({ token, user }) {
       const dbUser = await db.user.findFirst({
         where: {
@@ -55,12 +56,13 @@ export const authOptions: NextAuthOptions = {
 
       return {
         id: dbUser.id,
-        name: dbUser.id,
+        name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
         username: dbUser.username,
       }
     },
+
     redirect() {
       return '/'
     },

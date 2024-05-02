@@ -9,13 +9,15 @@ import { CommentVote, VoteType } from '@prisma/client'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { ArrowBigDown, ArrowBigUp } from 'lucide-react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { Button } from './ui/Button'
+
+type PartialVote = Pick<CommentVote, 'type'>
 
 interface CommentVotesProps {
   commentId: string
   initialVotesAmt: number
-  initialVote?: Pick<CommentVote, 'type'> | null
+  initialVote?: PartialVote
 }
 
 const CommentVotes: FC<CommentVotesProps> = ({
@@ -27,10 +29,6 @@ const CommentVotes: FC<CommentVotesProps> = ({
   const [votesAmt, setVotesAmt] = useState<number>(initialVotesAmt)
   const [currentVote, setCurrentVote] = useState(initialVote)
   const prevVote = usePrevious(currentVote)
-
-  useEffect(() => {
-    setCurrentVote(initialVote)
-  }, [initialVote])
 
   const { mutate: vote } = useMutation({
     mutationFn: async (voteType: VoteType) => {
@@ -45,7 +43,7 @@ const CommentVotes: FC<CommentVotesProps> = ({
       if (voteType === 'UP') setVotesAmt((prev) => prev - 1)
       else setVotesAmt((prev) => prev + 1)
 
-      //reset current vote
+      // reset current vote
       setCurrentVote(prevVote)
 
       if (err instanceof AxiosError) {
@@ -60,21 +58,17 @@ const CommentVotes: FC<CommentVotesProps> = ({
         variant: 'destructive',
       })
     },
+
     onMutate: (type) => {
       if (currentVote?.type === type) {
         setCurrentVote(undefined)
-        if (type === 'UP') {
-          setVotesAmt((prev) => prev - 1)
-        } else if (type === 'DOWN') {
-          setVotesAmt((prev) => prev + 1)
-        }
+        if (type === 'UP') setVotesAmt((prev) => prev - 1)
+        else if (type === 'DOWN') setVotesAmt((prev) => prev + 1)
       } else {
         setCurrentVote({ type })
-        if (type === 'UP') {
-          setVotesAmt((prev) => prev + (currentVote ? 2 : 1))
-        } else if (type === 'DOWN') {
+        if (type === 'UP') setVotesAmt((prev) => prev + (currentVote ? 2 : 1))
+        else if (type === 'DOWN')
           setVotesAmt((prev) => prev - (currentVote ? 2 : 1))
-        }
       }
     },
   })
@@ -93,9 +87,11 @@ const CommentVotes: FC<CommentVotesProps> = ({
           })}
         />
       </Button>
+
       <p className='text-center py-2 font-medium text-sm text-zinc-900'>
         {votesAmt}
       </p>
+
       <Button
         onClick={() => vote('DOWN')}
         size='sm'

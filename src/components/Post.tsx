@@ -1,3 +1,5 @@
+'use client'
+
 import { formatTimeToNow } from '@/lib/utils'
 import { Post, User, Vote } from '@prisma/client'
 import { MessageSquare } from 'lucide-react'
@@ -47,6 +49,7 @@ const Posts: FC<PostProps> = ({
                 >
                   r/{subredditName}
                 </a>
+
                 <span className='px-1'>•</span>
               </>
             ) : null}
@@ -70,8 +73,7 @@ const Posts: FC<PostProps> = ({
           </div>
         </div>
       </div>
-
-      <div className='bg-gray-50 z-20 text-sm px-4 py-4 sm:px-6'>
+      <div className='bg-gray-50 z-20 text-sm p-4 sm:px-6'>
         <a
           className='w-fit flex items-center gap-2'
           href={`/r/${subredditName}/post/${post.id}`}

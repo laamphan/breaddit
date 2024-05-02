@@ -49,12 +49,14 @@ const SubscribeLeaveToggle: FC<SubscribeLeaveToggleProps> = ({
       startTransition(() => {
         router.refresh()
       })
+
       return toast({
         title: 'Subscribed',
         description: `You are now subscribed to r/${subredditName}`,
       })
     },
   })
+
   const { mutate: unsubscribe, isLoading: isUnsubLoading } = useMutation({
     mutationFn: async () => {
       const payload: SubscribeToSubredditPayload = {
@@ -81,6 +83,7 @@ const SubscribeLeaveToggle: FC<SubscribeLeaveToggleProps> = ({
       startTransition(() => {
         router.refresh()
       })
+
       return toast({
         title: 'Unsubscribed',
         description: `You are now unsubscribed from r/${subredditName}`,
@@ -90,19 +93,19 @@ const SubscribeLeaveToggle: FC<SubscribeLeaveToggleProps> = ({
 
   return isSubscribed ? (
     <Button
+      className='w-full mt-1 mb-4'
       isLoading={isUnsubLoading}
       onClick={() => unsubscribe()}
-      className='w-full mt-1 mb-4'
     >
       Leave community
     </Button>
   ) : (
     <Button
+      className='w-full mt-1 mb-4'
       isLoading={isSubLoading}
       onClick={() => subscribe()}
-      className='w-full mt-1 mb-4'
     >
-      Join to post{' '}
+      Join to post
     </Button>
   )
 }

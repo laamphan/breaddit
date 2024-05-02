@@ -45,7 +45,7 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
       if (voteType === 'UP') setVotesAmt((prev) => prev - 1)
       else setVotesAmt((prev) => prev + 1)
 
-      //reset current vote
+      // reset current vote
       setCurrentVote(prevVote)
 
       if (err instanceof AxiosError) {
@@ -56,25 +56,21 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
 
       return toast({
         title: 'Something went wrong',
-        description: 'Your vote was not registered, please try again.',
+        description: 'Your vote was not registered. Please try again.',
         variant: 'destructive',
       })
     },
+
     onMutate: (type: VoteType) => {
       if (currentVote === type) {
         setCurrentVote(undefined)
-        if (type === 'UP') {
-          setVotesAmt((prev) => prev - 1)
-        } else if (type === 'DOWN') {
-          setVotesAmt((prev) => prev + 1)
-        }
+        if (type === 'UP') setVotesAmt((prev) => prev - 1)
+        else if (type === 'DOWN') setVotesAmt((prev) => prev + 1)
       } else {
         setCurrentVote(type)
-        if (type === 'UP') {
-          setVotesAmt((prev) => prev + (currentVote ? 2 : 1))
-        } else if (type === 'DOWN') {
+        if (type === 'UP') setVotesAmt((prev) => prev + (currentVote ? 2 : 1))
+        else if (type === 'DOWN')
           setVotesAmt((prev) => prev - (currentVote ? 2 : 1))
-        }
       }
     },
   })
@@ -93,9 +89,11 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
           })}
         />
       </Button>
+
       <p className='text-center py-2 font-medium text-sm text-zinc-900'>
         {votesAmt}
       </p>
+
       <Button
         onClick={() => vote('DOWN')}
         size='sm'

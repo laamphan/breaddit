@@ -2,7 +2,7 @@
 
 import { toast } from '@/hooks/use-toast'
 import { formatTimeToNow } from '@/lib/utils'
-import { CommentRequest } from '@/lib/validators/comments'
+import { CommentRequest } from '@/lib/validators/comment'
 import { Comment, CommentVote, User } from '@prisma/client'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
@@ -39,7 +39,6 @@ const PostComment: FC<PostCommentProps> = ({
   const { data: session } = useSession()
   const [isReplying, setIsReplying] = useState<boolean>(false)
   const [input, setInput] = useState<string>('')
-
   const { mutate: postComment, isLoading } = useMutation({
     mutationFn: async ({ postId, text, replyToId }: CommentRequest) => {
       const payload: CommentRequest = {
@@ -51,6 +50,7 @@ const PostComment: FC<PostCommentProps> = ({
       const { data } = await axios.patch(`/api/subreddit/post/comment`, payload)
       return data
     },
+
     onError: () => {
       return toast({
         title: 'Something went wrong',
@@ -70,7 +70,7 @@ const PostComment: FC<PostCommentProps> = ({
         <UserAvatar
           user={{
             name: comment.author.name || null,
-            image: comment.author.image || null,
+            image: comment.author.image,
           }}
           className='h-6 w-6'
         />
@@ -84,6 +84,7 @@ const PostComment: FC<PostCommentProps> = ({
           </p>
         </div>
       </div>
+
       <p className='text-sm text-zinc-900 mt-2'>{comment.text}</p>
 
       <div className='flex gap-2 items-center flex-wrap'>
@@ -104,46 +105,45 @@ const PostComment: FC<PostCommentProps> = ({
           <MessageSquare className='h-4 w-4 mr-1.5' />
           Reply
         </Button>
-        {isReplying ? (
-          <div className='grid w-full gap-1.5'>
-            <Label htmlFor='comment'>Your comment</Label>
-            <div className='mt-2'>
-              <Textarea
-                id='comment'
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                rows={1}
-                placeholder='What are your thoughts?'
-              />
+      </div>
 
-              <div className='mt-2 flex justify-end gap-2'>
-                <Button
-                  tabIndex={-1}
-                  variant='subtle'
-                  onClick={() => setIsReplying(false)}
-                >
-                  Cancel
-                </Button>
-
-                <Button
-                  isLoading={isLoading}
-                  disabled={input.length === 0}
-                  onClick={() => {
-                    if (!input) return
-                    postComment({
-                      postId,
-                      text: input,
-                      replyToId: comment.replyToId ?? comment.id,
-                    })
-                  }}
-                >
-                  Post
-                </Button>
-              </div>
+      {isReplying ? (
+        <div className='grid w-full gap-1.5'>
+          <Label htmlFor='comment'>Your comment</Label>
+          <div className='mt-2'>
+            <Textarea
+              id='comment'
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              rows={1}
+              placeholder='What are your thoughts?'
+            />
+            <div className='mt-2 flex justify-end gap-2'>
+              <Button
+                tabIndex={-1}
+                variant='subtle'
+                onClick={() => setIsReplying(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                isLoading={isLoading}
+                disabled={input.length === 0}
+                onClick={() => {
+                  if (!input) return
+                  postComment({
+                    postId,
+                    text: input,
+                    replyToId: comment.replyToId ?? comment.id,
+                  })
+                }}
+              >
+                Post
+              </Button>
             </div>
           </div>
-        ) : null}
-      </div>
+        </div>
+      ) : null}
     </div>
   )
 }
