@@ -55,6 +55,7 @@ const page = async ({ params }: PageProps) => {
     <div>
       <div className='h-full flex flex-col sm:flex-row items-center sm:items-start justify-between'>
         <Suspense fallback={<PostVoteShell />}>
+          {/* @ts-expect-error Server Component */}
           <PostVoteServer
             postId={post?.id ?? cachedPost.id}
             getData={async () => {
