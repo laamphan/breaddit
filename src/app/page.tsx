@@ -1,12 +1,12 @@
-import CustomFeed from '@/components/CustomFeed'
-import GeneralFeed from '@/components/GeneralFeed'
+import { CustomFeed } from '@/components/homepage/CustomFeed'
+import { GeneralFeed } from '@/components/homepage/GeneralFeed'
 import { buttonVariants } from '@/components/ui/Button'
 import { getAuthSession } from '@/lib/auth'
 import { HomeIcon } from 'lucide-react'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
-export const fetchCache = 'force-no-store'
+// export const fetchCache = 'force-no-store'
 
 export default async function Home() {
   const session = await getAuthSession()
@@ -25,21 +25,20 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className='-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6'>
+          <dl className='-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6'>
             <div className='flex justify-between gap-x-4 py-3'>
               <p className='text-zinc-500'>
                 Your personal Breaddit homepage. Come here to check in with your
                 favorite communities.
               </p>
-
-              <Link
-                className={buttonVariants({ className: 'w-full mt-4 mb-6' })}
-                href='/r/create'
-              >
-                Create community
-              </Link>
             </div>
-          </div>
+            <Link
+              className={buttonVariants({ className: 'w-full mt-4 mb-6' })}
+              href='/r/create'
+            >
+              Create community
+            </Link>
+          </dl>
         </div>
       </div>
     </>

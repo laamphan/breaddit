@@ -1,7 +1,6 @@
 import { AvatarProps } from '@radix-ui/react-avatar'
 import { User } from 'next-auth'
 import Image from 'next/image'
-import { FC } from 'react'
 import { Icons } from './Icons'
 import { Avatar, AvatarFallback } from './ui/Avatar'
 
@@ -9,7 +8,7 @@ interface UserAvatarProps extends AvatarProps {
   user: Pick<User, 'name' | 'image'>
 }
 
-const UserAvatar: FC<UserAvatarProps> = ({ user, ...props }) => {
+export const UserAvatar = ({ user, ...props }: UserAvatarProps) => {
   return (
     <Avatar {...props}>
       {user.image ? (
@@ -18,8 +17,10 @@ const UserAvatar: FC<UserAvatarProps> = ({ user, ...props }) => {
             fill
             src={user.image}
             alt='profile picture'
+            // google profile image bugs without this
             referrerPolicy='no-referrer'
-          ></Image>
+            sizes='auto'
+          />
         </div>
       ) : (
         <AvatarFallback>
@@ -30,5 +31,3 @@ const UserAvatar: FC<UserAvatarProps> = ({ user, ...props }) => {
     </Avatar>
   )
 }
-
-export default UserAvatar

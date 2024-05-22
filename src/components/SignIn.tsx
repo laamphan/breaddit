@@ -1,10 +1,10 @@
 import { Icons } from '@/components/Icons'
-import UserAuthForm from '@/components/UserAuthForm'
+import { UserAuthForm } from '@/components/UserAuthForm'
 import Link from 'next/link'
 
-const SignIn = () => {
+export const SignIn = () => {
   return (
-    <div className='container mx-auto w-full flex-col justify-center space-y-6 sm:w-[400px]'>
+    <div className='container mx-auto w-full flex flex-col justify-center space-y-6 sm:w-[400px]'>
       <div className='flex flex-col space-y-2 text-center'>
         <Icons.logo className='mx-auto h-6 w-6' />
         <h1 className='text-2xl font-semibold tracking-tight'>Welcome back</h1>
@@ -14,10 +14,10 @@ const SignIn = () => {
         </p>
       </div>
 
-      {/* sign in form */}
+      {/* sign-in form */}
       <UserAuthForm />
 
-      <p className='px-8 text-center text-sm text-zinc-700 '>
+      <p className='px-8 text-center text-sm text-muted-foreground'>
         New to Breaddit? {''}
         <Link
           href='/sign-up'
@@ -29,5 +29,3 @@ const SignIn = () => {
     </div>
   )
 }
-
-export default SignIn

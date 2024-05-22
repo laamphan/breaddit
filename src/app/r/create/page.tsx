@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useCustomToast } from '@/hooks/use-custom-toast'
 import { toast } from '@/hooks/use-toast'
-import { CreateSubredditPayload } from '@/lib/validators/subreddit'
+import { CreateSubredditRequest } from '@/lib/validators/subreddit'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
@@ -15,13 +15,12 @@ const Page = () => {
   const router = useRouter()
   const { loginToast } = useCustomToast()
 
-  // tanstack query
   const { mutate: createCommunity, isLoading } = useMutation({
     mutationFn: async () => {
-      const payload: CreateSubredditPayload = {
+      const payload: CreateSubredditRequest = {
         name: input,
       }
-      // axios (destructor)
+
       const { data } = await axios.post('/api/subreddit', payload)
       return data as string
     },
@@ -65,11 +64,13 @@ const Page = () => {
           <h1 className='text-xl font-semibold'>Create a community</h1>
         </div>
 
-        <hr className='bg-zinc-500 h-px' />
+        <hr className='bg-red-500 h-px' />
 
         <div>
           <p className='text-lg font-medium'>Name</p>
-          <p>Community names including capitalization cannot be changed.</p>
+          <p className='text-xs pb-2'>
+            Community names including capitalization cannot be changed.
+          </p>
 
           <div className='relative'>
             <p className='absolute text-sm left-0 w-8 inset-y-0 grid place-items-center text-zinc-400'>
@@ -84,7 +85,11 @@ const Page = () => {
         </div>
 
         <div className='flex justify-end gap-4'>
-          <Button variant='subtle' onClick={() => router.back()}>
+          <Button
+            disabled={isLoading}
+            variant='subtle'
+            onClick={() => router.back()}
+          >
             Cancel
           </Button>
           <Button
@@ -92,7 +97,7 @@ const Page = () => {
             disabled={input.length === 0}
             onClick={() => createCommunity()}
           >
-            Create community
+            Create Community
           </Button>
         </div>
       </div>

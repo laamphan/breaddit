@@ -2,9 +2,9 @@ import { INFINITE_SCROLLING_PAGINATION_RESULTS } from '@/config'
 import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
-import PostFeed from './PostFeed'
+import { PostFeed } from '../PostFeed'
 
-const CustomFeed = async () => {
+export const CustomFeed = async () => {
   const session = await getAuthSession()
 
   if (!session) return notFound()
@@ -40,5 +40,3 @@ const CustomFeed = async () => {
 
   return <PostFeed initialPosts={posts} />
 }
-
-export default CustomFeed

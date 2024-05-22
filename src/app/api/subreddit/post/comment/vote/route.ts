@@ -15,6 +15,7 @@ export async function PATCH(req: Request) {
       return new Response('Unauthorized', { status: 401 })
     }
 
+    // check if user has a vote
     const existingVote = await db.commentVote.findFirst({
       where: {
         userId: session.user.id,
@@ -22,6 +23,8 @@ export async function PATCH(req: Request) {
       },
     })
 
+    // diff this vote >< existing vote
+    // => delete || update vote
     if (existingVote) {
       if (existingVote.type === voteType) {
         await db.commentVote.delete({
@@ -49,6 +52,7 @@ export async function PATCH(req: Request) {
       }
     }
 
+    // no existing vote => create
     await db.commentVote.create({
       data: {
         type: voteType,
@@ -60,7 +64,7 @@ export async function PATCH(req: Request) {
     return new Response('OK')
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return new Response('Invalid request data passed', { status: 422 })
+      return new Response(error.message, { status: 400 })
     }
 
     return new Response('Could not register your vote, please try again.', {

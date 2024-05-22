@@ -5,7 +5,7 @@ import { PostVoteValidator } from '@/lib/validators/vote'
 import { CachedPost } from '@/types/redis'
 import { z } from 'zod'
 
-// caching
+// cache high engagement posts by number of upvotes
 const CACHE_AFTER_UPVOTES = 1
 
 export async function PATCH(req: Request) {
@@ -15,18 +15,11 @@ export async function PATCH(req: Request) {
     const { postId, voteType } = PostVoteValidator.parse(body)
 
     const session = await getAuthSession()
-
     if (!session?.user) {
       return new Response('Unauthorized', { status: 401 })
     }
 
-    const existingVote = await db.vote.findFirst({
-      where: {
-        userId: session.user.id,
-        postId,
-      },
-    })
-
+    // find voted post
     const post = await db.post.findUnique({
       where: {
         id: postId,
@@ -41,6 +34,16 @@ export async function PATCH(req: Request) {
       return new Response('Post not found', { status: 404 })
     }
 
+    // check if user has a vote
+    const existingVote = await db.vote.findFirst({
+      where: {
+        userId: session.user.id,
+        postId,
+      },
+    })
+
+    // diff this vote >< existing vote
+    // => delete || update vote
     if (existingVote) {
       if (existingVote.type === voteType) {
         await db.vote.delete({
@@ -66,7 +69,7 @@ export async function PATCH(req: Request) {
         },
       })
 
-      // recount the votes
+      // count votes, if qualifies then pass to redis
       const votesAmt = post.votes.reduce((acc, vote) => {
         if (vote.type === 'UP') return acc + 1
         if (vote.type === 'DOWN') return acc - 1
@@ -89,6 +92,7 @@ export async function PATCH(req: Request) {
       return new Response('OK')
     }
 
+    // no existing vote => create
     await db.vote.create({
       data: {
         type: voteType,
@@ -97,7 +101,7 @@ export async function PATCH(req: Request) {
       },
     })
 
-    // recount the votes
+    // count votes, if qualifies then pass to redis
     const votesAmt = post.votes.reduce((acc, vote) => {
       if (vote.type === 'UP') return acc + 1
       if (vote.type === 'DOWN') return acc - 1
@@ -119,7 +123,7 @@ export async function PATCH(req: Request) {
     return new Response('OK')
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return new Response('Invalid request data passed', { status: 422 })
+      return new Response(error.message, { status: 400 })
     }
 
     return new Response('Could not register your vote, please try again.', {

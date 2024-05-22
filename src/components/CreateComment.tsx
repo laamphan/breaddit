@@ -6,7 +6,7 @@ import { CommentRequest } from '@/lib/validators/comment'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import { Button } from './ui/Button'
 import { Label } from './ui/Label'
 import { Textarea } from './ui/Textarea'
@@ -16,7 +16,7 @@ interface CreateCommentProps {
   replyToId?: string
 }
 
-const CreateComment: FC<CreateCommentProps> = ({ postId, replyToId }) => {
+export const CreateComment = ({ postId, replyToId }: CreateCommentProps) => {
   const [input, setInput] = useState<string>('')
   const { loginToast } = useCustomToast()
   const router = useRouter()
@@ -28,8 +28,8 @@ const CreateComment: FC<CreateCommentProps> = ({ postId, replyToId }) => {
         text,
         replyToId,
       }
-      const { data } = await axios.patch(`/api/subreddit/post/comment`, payload)
-      return data
+
+      await axios.patch(`/api/subreddit/post/comment`, payload)
     },
 
     onError: (err) => {
@@ -77,5 +77,3 @@ const CreateComment: FC<CreateCommentProps> = ({ postId, replyToId }) => {
     </div>
   )
 }
-
-export default CreateComment

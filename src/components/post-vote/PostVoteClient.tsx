@@ -9,7 +9,7 @@ import { VoteType } from '@prisma/client'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { ArrowBigDown, ArrowBigUp } from 'lucide-react'
-import { FC, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../ui/Button'
 
 interface PostVoteClientProps {
@@ -18,11 +18,11 @@ interface PostVoteClientProps {
   initialVote?: VoteType | null
 }
 
-const PostVoteClient: FC<PostVoteClientProps> = ({
+export const PostVoteClient = ({
   postId,
   initialVotesAmt,
   initialVote,
-}) => {
+}: PostVoteClientProps) => {
   const { loginToast } = useCustomToast()
   const [votesAmt, setVotesAmt] = useState<number>(initialVotesAmt)
   const [currentVote, setCurrentVote] = useState(initialVote)
@@ -33,15 +33,17 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
   }, [initialVote])
 
   const { mutate: vote } = useMutation({
-    mutationFn: async (voteType: VoteType) => {
+    mutationFn: async (type: VoteType) => {
       const payload: PostVoteRequest = {
-        postId,
-        voteType,
+        voteType: type,
+        postId: postId,
       }
 
       await axios.patch('/api/subreddit/post/vote', payload)
     },
+
     onError: (err, voteType) => {
+      // revert optimistic update
       if (voteType === 'UP') setVotesAmt((prev) => prev - 1)
       else setVotesAmt((prev) => prev + 1)
 
@@ -61,12 +63,20 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
       })
     },
 
+    /** Run this function before mutation function
+     *  * => Perform optimistic update
+     *  returned value will be passed to "onError" & "onSettled"
+     *  (useful for rolling back optimistic update)
+     */
     onMutate: (type: VoteType) => {
       if (currentVote === type) {
+        // user make same vote type => reset
         setCurrentVote(undefined)
         if (type === 'UP') setVotesAmt((prev) => prev - 1)
         else if (type === 'DOWN') setVotesAmt((prev) => prev + 1)
       } else {
+        // user make opposite vote => +-2
+        // user make new vote => +- 1
         setCurrentVote(type)
         if (type === 'UP') setVotesAmt((prev) => prev + (currentVote ? 2 : 1))
         else if (type === 'DOWN')
@@ -76,7 +86,7 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
   })
 
   return (
-    <div className='flex sm:flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0'>
+    <div className='flex flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0'>
       <Button
         onClick={() => vote('UP')}
         size='sm'
@@ -109,5 +119,3 @@ const PostVoteClient: FC<PostVoteClientProps> = ({
     </div>
   )
 }
-
-export default PostVoteClient

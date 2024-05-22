@@ -3,8 +3,7 @@
 import { User } from 'next-auth'
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
-import { FC } from 'react'
-import UserAvatar from './UserAvatar'
+import { UserAvatar } from './UserAvatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,11 +12,11 @@ import {
   DropdownMenuTrigger,
 } from './ui/DropdownMenu'
 
-interface UserAccountNavProps {
+interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
   user: Pick<User, 'name' | 'image' | 'email'>
 }
 
-const UserAccountNav: FC<UserAccountNavProps> = ({ user }) => {
+export const UserAccountNav = ({ user }: UserAccountNavProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -34,7 +33,7 @@ const UserAccountNav: FC<UserAccountNavProps> = ({ user }) => {
           <div className='flex flex-col space-y-1 leading-none'>
             {user.name && <p className='font-medium'>{user.name}</p>}
             {user.email && (
-              <p className='w-[200px] truncate text-sm text-zinc-700'>
+              <p className='w-[200px] truncate text-sm text-muted-foreground'>
                 {user.email}
               </p>
             )}
@@ -54,7 +53,7 @@ const UserAccountNav: FC<UserAccountNavProps> = ({ user }) => {
           <Link href='/settings'>Settings</Link>
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator></DropdownMenuSeparator>
+        <DropdownMenuSeparator />
 
         <DropdownMenuItem
           onSelect={(event) => {
@@ -71,5 +70,3 @@ const UserAccountNav: FC<UserAccountNavProps> = ({ user }) => {
     </DropdownMenu>
   )
 }
-
-export default UserAccountNav

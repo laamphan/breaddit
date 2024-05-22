@@ -1,16 +1,22 @@
 import { getAuthSession } from '@/lib/auth'
-import type { Post, Vote } from '@prisma/client'
+import type { Post, Vote, VoteType } from '@prisma/client'
 import { notFound } from 'next/navigation'
-import PostVoteClient from './PostVoteClient'
+import { PostVoteClient } from './PostVoteClient'
 
 interface PostVoteServerProps {
   postId: string
   initialVotesAmt?: number
-  initialVote?: Vote['type'] | null
+  initialVote?: VoteType | null
   getData?: () => Promise<(Post & { votes: Vote[] }) | null>
 }
 
-const PostVoteServer = async ({
+/**
+ * We split the PostVotes into a client and a server component to allow for dynamic data
+ * fetching inside of this component, allowing for faster page loads via suspense streaming.
+ * We also have to option to fetch this info on a page-level and pass it in.
+ *
+ */
+export const PostVoteServer = async ({
   postId,
   initialVotesAmt,
   initialVote,
@@ -19,9 +25,10 @@ const PostVoteServer = async ({
   const session = await getAuthSession()
 
   let _votesAmt: number = 0
-  let _currentVote: Vote['type'] | null | undefined = undefined
+  let _currentVote: VoteType | null | undefined = undefined
 
   if (getData) {
+    // fetch data in component
     const post = await getData()
     if (!post) return notFound()
 
@@ -35,6 +42,7 @@ const PostVoteServer = async ({
       (vote) => vote.userId === session?.user?.id
     )?.type
   } else {
+    // passed as props
     _votesAmt = initialVotesAmt!
     _currentVote = initialVote
   }
@@ -47,5 +55,3 @@ const PostVoteServer = async ({
     />
   )
 }
-
-export default PostVoteServer

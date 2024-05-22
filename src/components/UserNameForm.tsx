@@ -1,14 +1,15 @@
 'use client'
 
 import { toast } from '@/hooks/use-toast'
-import { UserNameValidator, UsernameRequest } from '@/lib/validators/username'
+import { cn } from '@/lib/utils'
+import { UsernameValidator } from '@/lib/validators/username'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { User } from '@prisma/client'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
-import { FC } from 'react'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { Button } from './ui/Button'
 import {
   Card,
@@ -21,32 +22,40 @@ import {
 import { Input } from './ui/Input'
 import { Label } from './ui/Label'
 
-interface UserNameFormProps {
+interface UserNameFormProps extends React.HTMLAttributes<HTMLFormElement> {
   user: Pick<User, 'id' | 'username'>
 }
 
-const UserNameForm: FC<UserNameFormProps> = ({ user }) => {
+type FormData = z.infer<typeof UsernameValidator>
+
+export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
+  const router = useRouter()
+
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<UsernameRequest>({
-    resolver: zodResolver(UserNameValidator),
+  } = useForm<FormData>({
+    resolver: zodResolver(UsernameValidator),
     defaultValues: {
       name: user?.username || '',
     },
   })
 
-  const router = useRouter()
-
   const { mutate: updateUsername, isLoading } = useMutation({
-    mutationFn: async ({ name }: UsernameRequest) => {
-      const payload: UsernameRequest = { name }
+    mutationFn: async ({ name }: FormData) => {
+      const payload: FormData = { name }
 
-      const { data } = await axios.patch(`/api/username`, payload)
-      return data
+      await axios.patch(`/api/username`, payload)
     },
-    onError: (err) => {
+    onError: (err, data) => {
+      if (data.name === user.username) {
+        return toast({
+          title: "That's your old username.",
+          description: 'Please choose a different username.',
+          variant: 'destructive',
+        })
+      }
       if (err instanceof AxiosError) {
         if (err.response?.status === 409) {
           return toast({
@@ -71,7 +80,11 @@ const UserNameForm: FC<UserNameFormProps> = ({ user }) => {
   })
 
   return (
-    <form onSubmit={handleSubmit((e) => updateUsername(e))}>
+    <form
+      className={cn(className)}
+      onSubmit={handleSubmit((e) => updateUsername(e))}
+      {...props}
+    >
       <Card>
         <CardHeader>
           <CardTitle>Your username</CardTitle>
@@ -95,15 +108,13 @@ const UserNameForm: FC<UserNameFormProps> = ({ user }) => {
             />
             {errors?.name && (
               <p className='px-1 text-xs text-red-600'>{errors.name.message}</p>
-            )}{' '}
+            )}
           </div>
         </CardContent>
         <CardFooter>
-          <Button isLoading={isLoading}>Change name</Button>
+          <Button isLoading={isLoading}>Change Username</Button>
         </CardFooter>
       </Card>
     </form>
   )
 }
-
-export default UserNameForm

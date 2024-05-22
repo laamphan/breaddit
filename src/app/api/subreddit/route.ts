@@ -3,9 +3,7 @@ import { db } from '@/lib/db'
 import { SubredditValidator } from '@/lib/validators/subreddit'
 import { z } from 'zod'
 
-// route.ts enforced by NextJS
 export async function POST(req: Request) {
-  // learn how to handle errors properly
   try {
     const session = await getAuthSession()
 
@@ -26,6 +24,7 @@ export async function POST(req: Request) {
       return new Response('Subreddit already exists', { status: 409 })
     }
 
+    // create subreddit & subscription of creator
     const subreddit = await db.subreddit.create({
       data: {
         name,

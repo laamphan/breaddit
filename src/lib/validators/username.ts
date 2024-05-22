@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const UserNameValidator = z.object({
+export const UsernameValidator = z.object({
   name: z
     .string()
     .min(3)
@@ -8,4 +8,4 @@ export const UserNameValidator = z.object({
     .regex(/^[a-zA-Z0-9_]+$/),
 })
 
-export type UsernameRequest = z.infer<typeof UserNameValidator>
+export type UsernameRequest = z.infer<typeof UsernameValidator>

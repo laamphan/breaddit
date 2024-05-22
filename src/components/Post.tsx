@@ -3,36 +3,36 @@
 import { formatTimeToNow } from '@/lib/utils'
 import { Post, User, Vote } from '@prisma/client'
 import { MessageSquare } from 'lucide-react'
-import { FC, useRef } from 'react'
-import EditorOutput from './EditorOutput'
-import PostVoteClient from './post-vote/PostVoteClient'
+import Link from 'next/link'
+import { useRef } from 'react'
+import { EditorOutput } from './EditorOutput'
+import { PostVoteClient } from './post-vote/PostVoteClient'
 
 type PartialVote = Pick<Vote, 'type'>
 
 interface PostProps {
-  subredditName: string
   post: Post & {
     author: User
     votes: Vote[]
   }
-  commentAmt: number
   votesAmt: number
+  subredditName: string
   currentVote?: PartialVote
+  commentAmt: number
 }
 
-const Posts: FC<PostProps> = ({
+export const Posts = ({
   subredditName,
   post,
   commentAmt,
   votesAmt,
   currentVote,
-}) => {
+}: PostProps) => {
   const pRef = useRef<HTMLDivElement>(null)
 
   return (
     <div className='rounded-md bg-white shadow'>
       <div className='px-6 py-4 flex justify-between'>
-        {/* TODO: PostVotes */}
         <PostVoteClient
           postId={post.id}
           initialVote={currentVote?.type}
@@ -67,6 +67,7 @@ const Posts: FC<PostProps> = ({
           >
             <EditorOutput content={post.content} />
 
+            {/* apply gradient if post height above value */}
             {pRef.current?.clientHeight === 160 ? (
               <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent' />
             ) : null}
@@ -74,16 +75,14 @@ const Posts: FC<PostProps> = ({
         </div>
       </div>
       <div className='bg-gray-50 z-20 text-sm p-4 sm:px-6'>
-        <a
-          className='w-fit flex items-center gap-2'
+        <Link
           href={`/r/${subredditName}/post/${post.id}`}
+          className='w-fit flex items-center gap-2'
         >
           <MessageSquare className='h-4 w-4' />
           {commentAmt} comments
-        </a>
+        </Link>
       </div>
     </div>
   )
 }
-
-export default Posts

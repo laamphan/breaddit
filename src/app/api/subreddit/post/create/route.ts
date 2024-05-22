@@ -5,27 +5,26 @@ import { z } from 'zod'
 
 export async function POST(req: Request) {
   try {
+    const body = await req.json()
+
+    const { title, content, subredditId } = PostValidator.parse(body)
+
     const session = await getAuthSession()
 
     if (!session?.user) {
       return new Response('Unauthorized', { status: 401 })
     }
 
-    const body = await req.json()
-
-    const { subredditId, title, content } = PostValidator.parse(body)
-
-    const subscriptionExists = await db.subscription.findFirst({
+    // verify user is subscribed to passed subreddit id
+    const subscription = await db.subscription.findFirst({
       where: {
         subredditId,
         userId: session.user.id,
       },
     })
 
-    if (!subscriptionExists) {
-      return new Response('Subscribe to post', {
-        status: 400,
-      })
+    if (!subscription) {
+      return new Response('Subscribe to post', { status: 403 })
     }
 
     await db.post.create({
@@ -40,7 +39,7 @@ export async function POST(req: Request) {
     return new Response('OK')
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return new Response('Invalid request data passed', { status: 422 })
+      return new Response(error.message, { status: 400 })
     }
 
     return new Response(

@@ -8,21 +8,25 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { usePathname, useRouter } from 'next/navigation'
-import { FC, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
+import { z } from 'zod'
+import { Button } from './ui/Button'
+
+type FormData = z.infer<typeof PostValidator>
 
 interface EditorProps {
   subredditId: string
 }
 
-const Editor: FC<EditorProps> = ({ subredditId }) => {
+export const Editor = ({ subredditId }: EditorProps) => {
   // react hook form
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PostCreationRequest>({
+  } = useForm<FormData>({
     resolver: zodResolver(PostValidator),
     defaultValues: {
       subredditId,
@@ -65,12 +69,12 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
               endpoint: '/api/link',
             },
           },
-
           image: {
             class: ImageTool,
             config: {
               uploader: {
                 async uploadByFile(file: File) {
+                  // upload to uploadthing
                   const [res] = await uploadFiles([file], 'imageUploader')
 
                   return {
@@ -116,14 +120,13 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
       await initializeEditor()
 
       setTimeout(() => {
-        // set focus to title
-        _titleRef.current?.focus()
+        _titleRef?.current?.focus()
       }, 0)
     }
+
     if (isMounted) {
       init()
 
-      // uninitializing editor
       return () => {
         ref.current?.destroy()
         ref.current = undefined
@@ -131,7 +134,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
     }
   }, [isMounted, initializeEditor])
 
-  const { mutate: createPost } = useMutation({
+  const { mutate: createPost, isLoading } = useMutation({
     mutationFn: async ({
       title,
       content,
@@ -154,9 +157,10 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
     },
 
     onSuccess: () => {
+      // turn pathname /r/mycommunity/submit into /r/mycommunity
       const newPathname = pathname.split('/').slice(0, -1).join('/')
-      router.push(newPathname)
 
+      router.push(newPathname)
       router.refresh()
 
       return toast({
@@ -165,7 +169,7 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
     },
   })
 
-  async function onSubmit(data: PostCreationRequest) {
+  async function onSubmit(data: FormData) {
     const blocks = await ref.current?.save()
 
     const payload: PostCreationRequest = {
@@ -184,30 +188,43 @@ const Editor: FC<EditorProps> = ({ subredditId }) => {
   const { ref: titleRef, ...rest } = register('title')
 
   return (
-    <div className='w-full bg-zinc-50 rounded-lg border-zinc-200'>
-      <form
-        id='subreddit-post-form'
-        className='w-fit'
-        onSubmit={handleSubmit(onSubmit)}
+    <>
+      <div className='w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200'>
+        <form
+          id='subreddit-post-form'
+          className='w-fit'
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className='prose prose-stone dark:prose-invert'>
+            <TextareaAutosize
+              ref={(e) => {
+                titleRef(e)
+                // @ts-ignore
+                _titleRef.current = e
+              }}
+              {...rest}
+              placeholder='Title'
+              className='w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none'
+            />
+            <div id='editor' className='min-h-[450px]' />
+            <p className='text-sm text-gray-500'>
+              Use{' '}
+              <kbd className='rounded-md border bg-muted px-1 text-xs uppercase'>
+                Tab
+              </kbd>{' '}
+              to open the command menu.
+            </p>
+          </div>
+        </form>
+      </div>
+      <Button
+        isLoading={isLoading}
+        type='submit'
+        className='w-full mt-3'
+        form='subreddit-post-form'
       >
-        <div className='prose prose-stone dark:prose-invert'>
-          <TextareaAutosize
-            ref={(e) => {
-              titleRef(e)
-
-              // @ts-ignore
-              _titleRef.current = e
-            }}
-            {...rest}
-            placeholder='Title'
-            className='w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none'
-          />
-
-          <div id='editor' className='min-h-[500]' />
-        </div>
-      </form>
-    </div>
+        Post
+      </Button>
+    </>
   )
 }
-
-export default Editor

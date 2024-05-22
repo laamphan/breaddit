@@ -1,6 +1,6 @@
 import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { UserNameValidator } from '@/lib/validators/username'
+import { UsernameValidator } from '@/lib/validators/username'
 import { z } from 'zod'
 
 export async function PATCH(req: Request) {
@@ -13,7 +13,7 @@ export async function PATCH(req: Request) {
 
     const body = await req.json()
 
-    const { name } = UserNameValidator.parse(body)
+    const { name } = UsernameValidator.parse(body)
 
     const username = await db.user.findFirst({
       where: {
@@ -38,7 +38,7 @@ export async function PATCH(req: Request) {
     return new Response('OK')
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return new Response('Invalid request data passed', { status: 422 })
+      return new Response(error.message, { status: 400 })
     }
 
     return new Response('Could not update username, please try again later', {

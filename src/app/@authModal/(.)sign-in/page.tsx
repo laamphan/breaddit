@@ -1,5 +1,10 @@
-import CloseModal from '@/components/CloseModal'
-import SignIn from '@/components/SignIn'
+// "app/@authModal" - parallel routes - render in parallel with "app/(auth)"
+
+// "(.)sign-in" - intercepting routes - intercept "(auth)/sign-in/page.tsx"
+// on Reload -> loads the intercepted route "(auth)/sign-in/page.tsx"
+
+import { CloseModal } from '@/components/CloseModal'
+import { SignIn } from '@/components/SignIn'
 
 const page = () => {
   return (

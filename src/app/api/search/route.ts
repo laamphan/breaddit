@@ -6,6 +6,7 @@ export async function GET(req: Request) {
 
   if (!q) return new Response('Invalid query', { status: 400 })
 
+  // get subreddits which starts with search query
   const results = await db.subreddit.findMany({
     where: {
       name: {

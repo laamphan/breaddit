@@ -9,25 +9,27 @@ import { CommentVote, VoteType } from '@prisma/client'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { ArrowBigDown, ArrowBigUp } from 'lucide-react'
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import { Button } from './ui/Button'
-
-type PartialVote = Pick<CommentVote, 'type'>
 
 interface CommentVotesProps {
   commentId: string
-  initialVotesAmt: number
-  initialVote?: PartialVote
+  votesAmt: number
+  currentVote?: PartialVote
 }
 
-const CommentVotes: FC<CommentVotesProps> = ({
+type PartialVote = Pick<CommentVote, 'type'>
+
+export const CommentVotes = ({
   commentId,
-  initialVotesAmt,
-  initialVote,
-}) => {
+  votesAmt: _votesAmt,
+  currentVote: _currentVote,
+}: CommentVotesProps) => {
   const { loginToast } = useCustomToast()
-  const [votesAmt, setVotesAmt] = useState<number>(initialVotesAmt)
-  const [currentVote, setCurrentVote] = useState(initialVote)
+  const [votesAmt, setVotesAmt] = useState<number>(_votesAmt)
+  const [currentVote, setCurrentVote] = useState<PartialVote | undefined>(
+    _currentVote
+  )
   const prevVote = usePrevious(currentVote)
 
   const { mutate: vote } = useMutation({
@@ -59,12 +61,15 @@ const CommentVotes: FC<CommentVotesProps> = ({
       })
     },
 
-    onMutate: (type) => {
+    onMutate: (type: VoteType) => {
       if (currentVote?.type === type) {
+        // user make same vote type => reset
         setCurrentVote(undefined)
         if (type === 'UP') setVotesAmt((prev) => prev - 1)
         else if (type === 'DOWN') setVotesAmt((prev) => prev + 1)
       } else {
+        // user make opposite vote => +-2
+        // user make new vote => +- 1
         setCurrentVote({ type })
         if (type === 'UP') setVotesAmt((prev) => prev + (currentVote ? 2 : 1))
         else if (type === 'DOWN')
@@ -75,9 +80,10 @@ const CommentVotes: FC<CommentVotesProps> = ({
 
   return (
     <div className='flex gap-1'>
+      {/* upvote */}
       <Button
         onClick={() => vote('UP')}
-        size='sm'
+        size='xs'
         variant='ghost'
         aria-label='upvote'
       >
@@ -88,13 +94,15 @@ const CommentVotes: FC<CommentVotesProps> = ({
         />
       </Button>
 
-      <p className='text-center py-2 font-medium text-sm text-zinc-900'>
+      {/* score */}
+      <p className='text-center py-2 px-1 font-medium text-xs text-zinc-900'>
         {votesAmt}
       </p>
 
+      {/* downvote */}
       <Button
         onClick={() => vote('DOWN')}
-        size='sm'
+        size='xs'
         variant='ghost'
         aria-label='downvote'
       >
@@ -107,5 +115,3 @@ const CommentVotes: FC<CommentVotesProps> = ({
     </div>
   )
 }
-
-export default CommentVotes

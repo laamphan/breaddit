@@ -1,5 +1,4 @@
-import Editor from '@/components/Editor'
-import { Button } from '@/components/ui/Button'
+import { Editor } from '@/components/Editor'
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
 
@@ -13,6 +12,9 @@ const page = async ({ params }: PageProps) => {
   const subreddit = await db.subreddit.findFirst({
     where: {
       name: params.slug,
+    },
+    include: {
+      posts: true,
     },
   })
 
@@ -31,14 +33,13 @@ const page = async ({ params }: PageProps) => {
         </div>
       </div>
 
-      {/* form */}
       <Editor subredditId={subreddit.id} />
 
-      <div className='w-full flex justify-end'>
+      {/* <div className='w-full flex justify-end'>
         <Button type='submit' className='w-full' form='subreddit-post-form'>
           Post
         </Button>
-      </div>
+      </div> */}
     </div>
   )
 }

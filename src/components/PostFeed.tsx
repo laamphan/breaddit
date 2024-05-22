@@ -5,17 +5,29 @@ import { ExtendedPost } from '@/types/db'
 import { useIntersection } from '@mantine/hooks'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import axios from 'axios'
+import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import { FC, useEffect, useRef } from 'react'
-import Post from './Post'
+import { useEffect, useRef, useState } from 'react'
+import { Posts as Post } from './Post'
 
 interface PostFeedProps {
   initialPosts: ExtendedPost[]
   subredditName?: string
 }
 
-const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
+export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
+  // later assign this ref to (last) post element
   const lastPostRef = useRef<HTMLElement>(null)
+
+  /**
+   * mantine hooks
+   * useIntersection : to detect when element enters/leave viewport
+   * => lazy loading images || trigger animations || load data when scroll
+   *
+   * if an element with ref={ref} reaches the end of viewport
+   * => trigger "fetchNextPage()" from "useInfiniteQuery"
+   * by checking "entry?.isIntersecting"
+   */
   const { ref, entry } = useIntersection({
     root: lastPostRef.current,
     threshold: 1,
@@ -23,9 +35,8 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
 
   const { data: session } = useSession()
 
-  // tanstack query hook
   const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
-    ['infiniteQuery'],
+    ['infinite-query'],
     async ({ pageParam = 1 }) => {
       const query =
         `/api/posts?limit=${INFINITE_SCROLLING_PAGINATION_RESULTS}&page=${pageParam}` +
@@ -34,6 +45,7 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
       const { data } = await axios.get(query)
       return data as ExtendedPost[]
     },
+
     {
       getNextPageParam: (_, pages) => {
         return pages.length + 1
@@ -42,18 +54,24 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
     }
   )
 
+  const [posts, setPosts] = useState<ExtendedPost[]>(initialPosts)
+
   useEffect(() => {
     if (entry?.isIntersecting) {
+      console.log('seen')
       fetchNextPage()
+      if (data) {
+        const posts = data.pages.flatMap((pages) => pages)
+        if (posts.length > 0 && posts.length > initialPosts.length) {
+          setPosts(posts)
+        }
+      }
     }
   }, [entry, fetchNextPage])
-
-  const posts = data?.pages.flatMap((page) => page) ?? initialPosts
 
   return (
     <ul className='flex flex-col col-span-2 space-y-6'>
       {posts.map((post, index) => {
-        // AMT amount
         const votesAmt = post.votes.reduce((acc, vote) => {
           if (vote.type === 'UP') return acc + 1
           if (vote.type === 'DOWN') return acc - 1
@@ -65,11 +83,12 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
         )
 
         if (index === posts.length - 1) {
+          // assign ref to (last) post element
           return (
             <li key={post.id} ref={ref}>
               <Post
-                commentAmt={post.comments.length}
                 post={post}
+                commentAmt={post.comments.length}
                 subredditName={post.subreddit.name}
                 votesAmt={votesAmt}
                 currentVote={currentVote}
@@ -78,20 +97,24 @@ const PostFeed: FC<PostFeedProps> = ({ initialPosts, subredditName }) => {
           )
         } else {
           return (
-            <li key={post.id} ref={ref}>
+            <li key={post.id}>
               <Post
-                currentVote={currentVote}
-                votesAmt={votesAmt}
-                commentAmt={post.comments.length}
                 post={post}
+                commentAmt={post.comments.length}
                 subredditName={post.subreddit.name}
+                votesAmt={votesAmt}
+                currentVote={currentVote}
               />
             </li>
           )
         }
       })}
+
+      {isFetchingNextPage && (
+        <li className='flex justify-center'>
+          <Loader2 className='w-6 h-6 text-zinc-500 animate-spin' />
+        </li>
+      )}
     </ul>
   )
 }
-
-export default PostFeed

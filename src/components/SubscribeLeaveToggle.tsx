@@ -1,12 +1,12 @@
 'use client'
 
 import { useCustomToast } from '@/hooks/use-custom-toast'
-import { toast } from '@/hooks/use-toast'
-import { SubscribeToSubredditPayload } from '@/lib/validators/subreddit'
+import { useToast } from '@/hooks/use-toast'
+import { SubscribeToSubredditRequest } from '@/lib/validators/subreddit'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
-import { FC, startTransition } from 'react'
+import { startTransition } from 'react'
 import { Button } from './ui/Button'
 
 interface SubscribeLeaveToggleProps {
@@ -15,22 +15,22 @@ interface SubscribeLeaveToggleProps {
   subredditName: string
 }
 
-const SubscribeLeaveToggle: FC<SubscribeLeaveToggleProps> = ({
+export const SubscribeLeaveToggle = ({
   subredditId,
   isSubscribed,
   subredditName,
-}) => {
+}: SubscribeLeaveToggleProps) => {
+  const { toast } = useToast()
   const { loginToast } = useCustomToast()
   const router = useRouter()
 
   const { mutate: subscribe, isLoading: isSubLoading } = useMutation({
     mutationFn: async () => {
-      const payload: SubscribeToSubredditPayload = {
+      const payload: SubscribeToSubredditRequest = {
         subredditId,
       }
 
-      const { data } = await axios.post('/api/subreddit/subscribe', payload)
-      return data as string
+      await axios.post('/api/subreddit/subscribe', payload)
     },
     onError: (err) => {
       if (err instanceof AxiosError) {
@@ -59,12 +59,11 @@ const SubscribeLeaveToggle: FC<SubscribeLeaveToggleProps> = ({
 
   const { mutate: unsubscribe, isLoading: isUnsubLoading } = useMutation({
     mutationFn: async () => {
-      const payload: SubscribeToSubredditPayload = {
+      const payload: SubscribeToSubredditRequest = {
         subredditId,
       }
 
-      const { data } = await axios.post('/api/subreddit/unsubscribe', payload)
-      return data as string
+      await axios.post('/api/subreddit/unsubscribe', payload)
     },
     onError: (err) => {
       if (err instanceof AxiosError) {
@@ -109,5 +108,3 @@ const SubscribeLeaveToggle: FC<SubscribeLeaveToggleProps> = ({
     </Button>
   )
 }
-
-export default SubscribeLeaveToggle

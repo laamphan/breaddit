@@ -1,6 +1,6 @@
-import CommentsSection from '@/components/CommentsSection'
-import EditorOutput from '@/components/EditorOutput'
-import PostVoteServer from '@/components/post-vote/PostVoteServer'
+import { CommentsSection } from '@/components/CommentsSection'
+import { EditorOutput } from '@/components/EditorOutput'
+import { PostVoteServer } from '@/components/post-vote/PostVoteServer'
 import { buttonVariants } from '@/components/ui/Button'
 import { db } from '@/lib/db'
 import { redis } from '@/lib/redis'
@@ -17,10 +17,20 @@ interface PageProps {
   }
 }
 
+/**
+ * * next's route segment config
+ * "const dynamic" : change dynamic behavior to fully static | fully dynamic
+ * "force-dynamic" : rendered for each user at request time
+ */
 export const dynamic = 'force-dynamic'
-export const fetchCache = 'force-no-store'
-
+/**
+ * * commented the line below : line above did all the job
+ * ! export const fetchCache = 'force-no-store'
+ * ? "const dynamic" rendering? redis somehow does not work well with default
+ * ? probably does not work well with next's caching behind default render behavior
+ */
 const page = async ({ params }: PageProps) => {
+  // redis : load cached post
   const cachedPost = (await redis.hgetall(
     `post:${params.postId}`
   )) as CachedPost
@@ -67,7 +77,7 @@ const page = async ({ params }: PageProps) => {
             {formatTimeToNow(new Date(post?.createdAt ?? cachedPost.createdAt))}
           </p>
 
-          <h1 className='text-xl font-semibold py-2 leading-7 text-gray-900'>
+          <h1 className='text-xl font-semibold py-2 leading-6 text-gray-900'>
             {post?.title ?? cachedPost.title}
           </h1>
 
@@ -92,10 +102,11 @@ function PostVoteShell() {
       <div className={buttonVariants({ variant: 'ghost' })}>
         <ArrowBigUp className='h-5 w-5 text-zinc-700' />
       </div>
-      {/* score */}
+
       <div className='text-center py-2 font-medium text-sm text-zinc-900'>
         <Loader2 className='h-3 w-3 animate-spin' />
       </div>
+
       <div className={buttonVariants({ variant: 'ghost' })}>
         <ArrowBigDown className='h-5 w-5 text-zinc-700' />
       </div>

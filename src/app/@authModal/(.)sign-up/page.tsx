@@ -1,5 +1,5 @@
-import CloseModal from '@/components/CloseModal'
-import SignUp from '@/components/SignUp'
+import { CloseModal } from '@/components/CloseModal'
+import { SignUp } from '@/components/SignUp'
 
 const page = () => {
   return (
