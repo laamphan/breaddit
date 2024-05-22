@@ -66,6 +66,7 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
         }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry, fetchNextPage])
 
   return (
