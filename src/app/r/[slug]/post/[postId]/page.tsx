@@ -23,6 +23,8 @@ interface PageProps {
  * "force-dynamic" : rendered for each user at request time
  */
 export const dynamic = 'force-dynamic'
+// caching doesn't seem to work well. uncommented:
+export const fetchCache = 'force-no-store'
 /**
  * * commented the line below : line above did all the job
  * ! export const fetchCache = 'force-no-store'
