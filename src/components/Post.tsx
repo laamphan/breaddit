@@ -62,13 +62,13 @@ export const Posts = ({
             </h1>
           </a>
           <div
-            className='relative text-sm max-h-80 w-full overflow-clip'
+            className='relative text-sm max-h-[600px] w-full overflow-clip'
             ref={pRef}
           >
             <EditorOutput content={post.content} />
 
             {/* apply gradient if post height above value */}
-            {pRef.current?.clientHeight === 320 ? (
+            {pRef.current?.clientHeight === 600 ? (
               <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent' />
             ) : null}
           </div>
