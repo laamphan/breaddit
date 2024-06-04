@@ -82,31 +82,60 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
           (vote) => vote.userId === session?.user.id
         )
 
-        if (index === posts.length - 1) {
-          // assign ref to (last) post element
-          return (
-            <li key={post.id} ref={ref}>
-              <Post
-                post={post}
-                commentAmt={post.comments.length}
-                subredditName={post.subreddit.name}
-                votesAmt={votesAmt}
-                currentVote={currentVote}
-              />
-            </li>
-          )
+        if (posts.length > 3) {
+          if (index === posts.length - 2) {
+            // assign ref to (last) post element
+            return (
+              <li key={post.id} ref={ref}>
+                <Post
+                  post={post}
+                  commentAmt={post.comments.length}
+                  subredditName={post.subreddit.name}
+                  votesAmt={votesAmt}
+                  currentVote={currentVote}
+                />
+              </li>
+            )
+          } else {
+            return (
+              <li key={post.id}>
+                <Post
+                  post={post}
+                  commentAmt={post.comments.length}
+                  subredditName={post.subreddit.name}
+                  votesAmt={votesAmt}
+                  currentVote={currentVote}
+                />
+              </li>
+            )
+          }
         } else {
-          return (
-            <li key={post.id}>
-              <Post
-                post={post}
-                commentAmt={post.comments.length}
-                subredditName={post.subreddit.name}
-                votesAmt={votesAmt}
-                currentVote={currentVote}
-              />
-            </li>
-          )
+          if (index === posts.length - 1) {
+            // assign ref to (last) post element
+            return (
+              <li key={post.id} ref={ref}>
+                <Post
+                  post={post}
+                  commentAmt={post.comments.length}
+                  subredditName={post.subreddit.name}
+                  votesAmt={votesAmt}
+                  currentVote={currentVote}
+                />
+              </li>
+            )
+          } else {
+            return (
+              <li key={post.id}>
+                <Post
+                  post={post}
+                  commentAmt={post.comments.length}
+                  subredditName={post.subreddit.name}
+                  votesAmt={votesAmt}
+                  currentVote={currentVote}
+                />
+              </li>
+            )
+          }
         }
       })}
 
