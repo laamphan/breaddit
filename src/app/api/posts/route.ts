@@ -38,7 +38,8 @@ export async function GET(req: Request) {
     // fetch posts based on context
     let whereClause = {}
 
-    if (subredditName) {
+    if (subredditName === 'all') {
+    } else if (subredditName) {
       whereClause = {
         subreddit: {
           name: subredditName,
