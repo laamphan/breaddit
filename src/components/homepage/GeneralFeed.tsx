@@ -2,7 +2,11 @@ import { INFINITE_SCROLLING_PAGINATION_RESULTS } from '@/config'
 import { db } from '@/lib/db'
 import { PostFeed } from '../PostFeed'
 
-export const GeneralFeed = async () => {
+interface GeneralFeedProps {
+  subredditName?: string
+}
+
+export const GeneralFeed = async ({ subredditName }: GeneralFeedProps) => {
   const posts = await db.post.findMany({
     orderBy: {
       createdAt: 'desc',
@@ -17,5 +21,5 @@ export const GeneralFeed = async () => {
     take: INFINITE_SCROLLING_PAGINATION_RESULTS,
   })
 
-  return <PostFeed initialPosts={posts} />
+  return <PostFeed initialPosts={posts} subredditName={subredditName} />
 }
