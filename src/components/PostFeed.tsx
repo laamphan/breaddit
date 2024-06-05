@@ -16,6 +16,8 @@ interface PostFeedProps {
 }
 
 export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
+  const [fetchCount, setFetchCount] = useState(0)
+
   // later assign this ref to (last) post element
   const lastPostRef = useRef<HTMLElement>(null)
 
@@ -57,6 +59,10 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
   const [posts, setPosts] = useState<ExtendedPost[]>(initialPosts)
 
   useEffect(() => {
+    if (fetchCount === 0) {
+      fetchNextPage()
+      setFetchCount(fetchCount + 1)
+    }
     if (entry?.isIntersecting) {
       fetchNextPage()
       if (data) {
@@ -82,59 +88,31 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
           (vote) => vote.userId === session?.user.id
         )
 
-        if (posts.length > 3) {
-          if (index === posts.length - 2) {
-            return (
-              <li key={post.id} ref={ref}>
-                <Post
-                  post={post}
-                  commentAmt={post.comments.length}
-                  subredditName={post.subreddit.name}
-                  votesAmt={votesAmt}
-                  currentVote={currentVote}
-                />
-              </li>
-            )
-          } else {
-            return (
-              <li key={post.id}>
-                <Post
-                  post={post}
-                  commentAmt={post.comments.length}
-                  subredditName={post.subreddit.name}
-                  votesAmt={votesAmt}
-                  currentVote={currentVote}
-                />
-              </li>
-            )
-          }
+        if (index === posts.length - 1) {
+          // assign ref to (last) post element
+          return (
+            <li key={post.id} ref={ref}>
+              <Post
+                post={post}
+                commentAmt={post.comments.length}
+                subredditName={post.subreddit.name}
+                votesAmt={votesAmt}
+                currentVote={currentVote}
+              />
+            </li>
+          )
         } else {
-          if (index === posts.length - 1) {
-            // assign ref to (last) post element
-            return (
-              <li key={post.id} ref={ref}>
-                <Post
-                  post={post}
-                  commentAmt={post.comments.length}
-                  subredditName={post.subreddit.name}
-                  votesAmt={votesAmt}
-                  currentVote={currentVote}
-                />
-              </li>
-            )
-          } else {
-            return (
-              <li key={post.id}>
-                <Post
-                  post={post}
-                  commentAmt={post.comments.length}
-                  subredditName={post.subreddit.name}
-                  votesAmt={votesAmt}
-                  currentVote={currentVote}
-                />
-              </li>
-            )
-          }
+          return (
+            <li key={post.id}>
+              <Post
+                post={post}
+                commentAmt={post.comments.length}
+                subredditName={post.subreddit.name}
+                votesAmt={votesAmt}
+                currentVote={currentVote}
+              />
+            </li>
+          )
         }
       })}
 
