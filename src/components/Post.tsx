@@ -1,9 +1,15 @@
 'use client'
 
+import { useCustomToast } from '@/hooks/use-custom-toast'
+import { useToast } from '@/hooks/use-toast'
 import { formatTimeToNow } from '@/lib/utils'
+import { SubscribeToSubredditRequest } from '@/lib/validators/subreddit'
 import { Post, User, Vote } from '@prisma/client'
+import { useMutation } from '@tanstack/react-query'
+import axios, { AxiosError } from 'axios'
 import { MessageSquare } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useRef } from 'react'
 import { EditorOutput } from './EditorOutput'
 import { PostVoteClient } from './post-vote/PostVoteClient'
@@ -17,20 +23,65 @@ interface PostProps {
   }
   votesAmt: number
   subredditName: string
+  subredditId?: string
   currentVote?: PartialVote
   commentAmt: number
   passedRef?: any
+  userId?: string
+  subscribed?: boolean
 }
 
 export const Posts = ({
   subredditName,
+  subredditId = '',
   post,
   commentAmt,
   votesAmt,
   currentVote,
   passedRef,
+  // userId,
+  subscribed,
 }: PostProps) => {
   const pRef = useRef<HTMLDivElement>(null)
+
+  const { toast } = useToast()
+  const { loginToast } = useCustomToast()
+  const router = useRouter()
+
+  const { mutate: subscribe, isLoading: isSubLoading } = useMutation({
+    mutationFn: async () => {
+      const payload: SubscribeToSubredditRequest = {
+        subredditId,
+      }
+
+      await axios.post('/api/subreddit/subscribe', payload)
+    },
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 401) {
+          return loginToast()
+        }
+      }
+
+      return toast({
+        title: 'There was a problem',
+        description: 'Something went wrong, please try again.',
+        variant: 'destructive',
+      })
+    },
+    onSuccess: () => {
+      // startTransition(() => {
+      router.refresh()
+      // })
+
+      return toast({
+        title: 'Subscribed',
+        description: `You are now subscribed to r/${subredditName}`,
+      })
+    },
+  })
+
+  console.log('posts', subscribed)
 
   return (
     <div className='rounded-md bg-white shadow'>
@@ -56,7 +107,20 @@ export const Posts = ({
               </>
             ) : null}
             <span>Posted by u/{post.author.username}</span>{' '}
-            {formatTimeToNow(new Date(post.createdAt))}
+            {formatTimeToNow(new Date(post.createdAt))}{' '}
+            {!subscribed ? (
+              <>
+                <span className='px-1'>•</span>
+                <span className=''>
+                  <a
+                    className='text-white bg-blue-700 px-2 py-1 rounded-md font-semibold text-sm cursor-pointer corner'
+                    onClick={() => subscribe()}
+                  >
+                    Join
+                  </a>
+                </span>
+              </>
+            ) : null}{' '}
           </div>
           <a href={`/r/${subredditName}/post/${post.id}`}>
             <h1

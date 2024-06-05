@@ -13,9 +13,14 @@ import { Posts as Post } from './Post'
 interface PostFeedProps {
   initialPosts: ExtendedPost[]
   subredditName?: string
+  subscribedSubreddits?: string[]
 }
 
-export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
+export const PostFeed = ({
+  initialPosts,
+  subredditName,
+  subscribedSubreddits,
+}: PostFeedProps) => {
   // later assign this ref to (last) post element
   const lastPostRef = useRef<HTMLElement>(null)
 
@@ -112,9 +117,16 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
                 post={post}
                 commentAmt={post.comments.length}
                 subredditName={post.subreddit.name}
+                subredditId={post.subreddit.id}
                 votesAmt={votesAmt}
                 currentVote={currentVote}
                 passedRef={ref}
+                // userId={session?.user.id}
+                subscribed={
+                  subscribedSubreddits
+                    ? subscribedSubreddits.indexOf(post.subreddit.id) > -1
+                    : undefined
+                }
               />
             </li>
           )
@@ -125,8 +137,14 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
                 post={post}
                 commentAmt={post.comments.length}
                 subredditName={post.subreddit.name}
+                subredditId={post.subreddit.id}
                 votesAmt={votesAmt}
                 currentVote={currentVote}
+                subscribed={
+                  subscribedSubreddits
+                    ? subscribedSubreddits.indexOf(post.subreddit.id) > -1
+                    : undefined
+                }
               />
             </li>
           )
