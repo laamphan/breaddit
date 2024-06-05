@@ -91,13 +91,17 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
         if (index === posts.length - 1) {
           // assign ref to (last) post element
           return (
-            <li key={post.id} ref={ref}>
+            <li
+              key={post.id}
+              // ref={ref}
+            >
               <Post
                 post={post}
                 commentAmt={post.comments.length}
                 subredditName={post.subreddit.name}
                 votesAmt={votesAmt}
                 currentVote={currentVote}
+                passedRef={ref}
               />
             </li>
           )

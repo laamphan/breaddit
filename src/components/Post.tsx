@@ -19,6 +19,7 @@ interface PostProps {
   subredditName: string
   currentVote?: PartialVote
   commentAmt: number
+  passedRef?: any
 }
 
 export const Posts = ({
@@ -27,6 +28,7 @@ export const Posts = ({
   commentAmt,
   votesAmt,
   currentVote,
+  passedRef,
 }: PostProps) => {
   const pRef = useRef<HTMLDivElement>(null)
 
@@ -57,18 +59,21 @@ export const Posts = ({
             {formatTimeToNow(new Date(post.createdAt))}
           </div>
           <a href={`/r/${subredditName}/post/${post.id}`}>
-            <h1 className='text-lg font-semibold py-2 leading-6 text-gray-900'>
+            <h1
+              className='text-lg font-semibold py-2 leading-6 text-gray-900'
+              ref={passedRef}
+            >
               {post.title}
             </h1>
           </a>
           <div
-            className='relative text-sm max-h-[600px] w-full overflow-clip'
+            className='relative text-sm max-h-[450px] w-full overflow-clip'
             ref={pRef}
           >
             <EditorOutput content={post.content} />
 
             {/* apply gradient if post height above value */}
-            {pRef.current?.clientHeight === 600 ? (
+            {pRef.current?.clientHeight === 450 ? (
               <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent' />
             ) : null}
           </div>
