@@ -70,7 +70,7 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
         if (posts.length > 0 && posts.length > initialPosts.length) {
           setPosts(posts)
         }
-      }
+      } else fetchNextPage()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry, fetchNextPage])
