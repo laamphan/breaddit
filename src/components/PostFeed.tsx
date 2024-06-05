@@ -70,7 +70,7 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
       setFirstPageFetched(true)
     }
     if (entry?.isIntersecting) {
-      if (refetchCount === 6) {
+      if (refetchCount === 10) {
       } else {
         fetchNextPage()
         if (data) {
