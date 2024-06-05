@@ -6,7 +6,7 @@ export default function CustomImageRenderer({ data }: any) {
   const src = data.file.url
 
   return (
-    <div className='relative w-full min-h-[450px]'>
+    <div className='relative w-full min-h-[440px]'>
       <Image
         alt='image'
         className='object-contain'
