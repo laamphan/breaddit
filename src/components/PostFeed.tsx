@@ -81,7 +81,6 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
         }
         if (posts.length === postsCount) {
           setRefetchCount(refetchCount + 1)
-          console.log('refetch', refetchCount)
         }
       }
     }
