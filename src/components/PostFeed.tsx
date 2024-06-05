@@ -16,8 +16,6 @@ interface PostFeedProps {
 }
 
 export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
-  const [fetchCount, setFetchCount] = useState(0)
-
   // later assign this ref to (last) post element
   const lastPostRef = useRef<HTMLElement>(null)
 
@@ -57,23 +55,39 @@ export const PostFeed = ({ initialPosts, subredditName }: PostFeedProps) => {
   )
 
   const [posts, setPosts] = useState<ExtendedPost[]>(initialPosts)
+  const [postsCount, setPostsCount] = useState(0)
+  const [firstPageFetched, setFirstPageFetched] = useState(false)
+  const [refetchCount, setRefetchCount] = useState(0)
 
   useEffect(() => {
-    if (fetchCount === 0) {
+    setRefetchCount(0)
+    setPostsCount(posts.length)
+  }, [posts.length])
+
+  useEffect(() => {
+    if (firstPageFetched === false) {
       fetchNextPage()
-      setFetchCount(fetchCount + 1)
+      setFirstPageFetched(true)
     }
     if (entry?.isIntersecting) {
-      fetchNextPage()
-      if (data) {
-        const posts = data.pages.flatMap((pages) => pages)
-        if (posts.length > 0 && posts.length > initialPosts.length) {
-          setPosts(posts)
+      if (refetchCount === 3) {
+      } else {
+        fetchNextPage()
+        if (data) {
+          const posts = data.pages.flatMap((pages) => pages)
+          if (posts.length > 0 && posts.length > initialPosts.length) {
+            setPosts(posts)
+          }
         }
-      } else fetchNextPage()
+        if (posts.length === postsCount) {
+          setRefetchCount(refetchCount + 1)
+          console.log('refetch', refetchCount)
+        }
+      }
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entry, fetchNextPage])
+  }, [entry, fetchNextPage, isFetchingNextPage])
 
   return (
     <ul className='flex flex-col col-span-2 space-y-6'>
