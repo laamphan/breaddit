@@ -39,7 +39,7 @@ export const Posts = ({
   votesAmt,
   currentVote,
   passedRef,
-  // userId,
+  userId,
   subscribed,
 }: PostProps) => {
   const pRef = useRef<HTMLDivElement>(null)
@@ -81,8 +81,6 @@ export const Posts = ({
     },
   })
 
-  console.log('posts', subscribed)
-
   return (
     <div className='rounded-md bg-white shadow'>
       <div className='px-6 py-4 flex justify-between'>
@@ -107,8 +105,8 @@ export const Posts = ({
               </>
             ) : null}
             <span>Posted by u/{post.author.username}</span>{' '}
-            {formatTimeToNow(new Date(post.createdAt))}{' '}
-            {!subscribed ? (
+            {formatTimeToNow(new Date(post.createdAt))} {/* {userId ? ( */}
+            {subscribed === false ? (
               <>
                 <span className='px-1'>•</span>
                 <span className=''>
@@ -120,7 +118,8 @@ export const Posts = ({
                   </a>
                 </span>
               </>
-            ) : null}{' '}
+            ) : null}
+            {/* ) : null}{' '} */}
           </div>
           <a href={`/r/${subredditName}/post/${post.id}`}>
             <h1

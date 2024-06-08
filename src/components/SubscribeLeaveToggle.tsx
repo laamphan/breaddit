@@ -92,7 +92,7 @@ export const SubscribeLeaveToggle = ({
 
   return isSubscribed ? (
     <Button
-      className='w-full mt-1 mb-4'
+      className='w-full mt-1 mb-4 whitespace-nowrap'
       isLoading={isUnsubLoading}
       onClick={() => unsubscribe()}
     >

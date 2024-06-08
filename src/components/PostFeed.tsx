@@ -140,6 +140,7 @@ export const PostFeed = ({
                 subredditId={post.subreddit.id}
                 votesAmt={votesAmt}
                 currentVote={currentVote}
+                userId={session?.user.id}
                 subscribed={
                   subscribedSubreddits
                     ? subscribedSubreddits.indexOf(post.subreddit.id) > -1
