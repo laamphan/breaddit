@@ -21,7 +21,7 @@ export const CreateComment = ({ postId, replyToId }: CreateCommentProps) => {
   const { loginToast } = useCustomToast()
   const router = useRouter()
 
-  const { mutate: comment, isLoading } = useMutation({
+  const { mutate: comment, isPending } = useMutation({
     mutationFn: async ({ postId, text, replyToId }: CommentRequest) => {
       const payload: CommentRequest = {
         postId,
@@ -66,7 +66,7 @@ export const CreateComment = ({ postId, replyToId }: CreateCommentProps) => {
 
         <div className='mt-2 flex justify-end'>
           <Button
-            isLoading={isLoading}
+            isLoading={isPending}
             disabled={input.length === 0}
             onClick={() => comment({ postId, text: input, replyToId })}
           >

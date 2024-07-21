@@ -48,7 +48,7 @@ export const Posts = ({
   const { loginToast } = useCustomToast()
   const router = useRouter()
 
-  const { mutate: subscribe, isLoading: isSubLoading } = useMutation({
+  const { mutate: subscribe, isPending: isSubLoading } = useMutation({
     mutationFn: async () => {
       const payload: SubscribeToSubredditRequest = {
         subredditId,

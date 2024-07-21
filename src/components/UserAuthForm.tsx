@@ -41,7 +41,7 @@ export const UserAuthForm = ({ className, ...props }: UserAuthFormProps) => {
       <Button
         isLoading={isLoading}
         type='button'
-        size='sm'
+        size='icon'
         className='w-full'
         onClick={loginWithGoogle}
         disabled={isLoading}

@@ -40,24 +40,33 @@ export const PostFeed = ({
 
   const { data: session } = useSession()
 
-  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
-    ['infinite-query'],
-    async ({ pageParam = 1 }) => {
+  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery<
+    ExtendedPost[],
+    Error
+  >({
+    queryKey: ['infinite-query'],
+    queryFn: async ({ pageParam = 1 }) => {
       const query =
         `/api/posts?limit=${INFINITE_SCROLLING_PAGINATION_RESULTS}&page=${pageParam}` +
         (!!subredditName ? `&subredditName=${subredditName}` : '')
-
-      const { data } = await axios.get(query)
-      return data as ExtendedPost[]
+      const response = await axios.get(query)
+      return response.data
     },
+    // ({ pageParam = 1 }) => {
+    //   const query =
+    //     `/api/posts?limit=${INFINITE_SCROLLING_PAGINATION_RESULTS}&page=${pageParam}` +
+    //     (!!subredditName ? `&subredditName=${subredditName}` : '')
 
-    {
-      getNextPageParam: (_, pages) => {
-        return pages.length + 1
-      },
-      initialData: { pages: [initialPosts], pageParams: [1] },
-    }
-  )
+    //   const { data } = await axios.get(query)
+    //   return data as ExtendedPost[]
+    // },
+
+    getNextPageParam: (_, pages) => {
+      return pages.length + 1
+    },
+    initialData: { pages: [initialPosts], pageParams: [1] },
+    initialPageParam: 1,
+  })
 
   const [posts, setPosts] = useState<ExtendedPost[]>(initialPosts)
   const [postsCount, setPostsCount] = useState(0)

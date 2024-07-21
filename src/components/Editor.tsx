@@ -75,7 +75,9 @@ export const Editor = ({ subredditId }: EditorProps) => {
               uploader: {
                 async uploadByFile(file: File) {
                   // upload to uploadthing
-                  const res = await uploadFiles("imageUploader", {files: [file]});
+                  const res = await uploadFiles('imageUploader', {
+                    files: [file],
+                  })
 
                   return {
                     success: 1,
@@ -134,7 +136,7 @@ export const Editor = ({ subredditId }: EditorProps) => {
     }
   }, [isMounted, initializeEditor])
 
-  const { mutate: createPost, isLoading } = useMutation({
+  const { mutate: createPost, isPending } = useMutation({
     mutationFn: async ({
       title,
       content,
@@ -210,7 +212,7 @@ export const Editor = ({ subredditId }: EditorProps) => {
             <p className='text-sm text-gray-500'>
               Use{' '}
               <kbd className='rounded-md border bg-muted px-1 text-xs uppercase'>
-                Tab
+                {'/'}
               </kbd>{' '}
               to open the command menu.
             </p>
@@ -218,7 +220,7 @@ export const Editor = ({ subredditId }: EditorProps) => {
         </form>
       </div>
       <Button
-        isLoading={isLoading}
+        isLoading={isPending}
         type='submit'
         className='w-full mt-3'
         form='subreddit-post-form'

@@ -45,7 +45,7 @@ export const PostComment = ({
     setIsReplying(false)
   })
 
-  const { mutate: postComment, isLoading } = useMutation({
+  const { mutate: postComment, isPending } = useMutation({
     mutationFn: async ({ postId, text, replyToId }: CommentRequest) => {
       const payload: CommentRequest = {
         postId,
@@ -106,7 +106,7 @@ export const PostComment = ({
             setIsReplying(true)
           }}
           variant='ghost'
-          size='xs'
+          size='sm'
         >
           <MessageSquare className='h-4 w-4 mr-1.5' />
           Reply
@@ -135,13 +135,13 @@ export const PostComment = ({
             <div className='mt-2 flex justify-end gap-2'>
               <Button
                 tabIndex={-1}
-                variant='subtle'
+                variant='secondary'
                 onClick={() => setIsReplying(false)}
               >
                 Cancel
               </Button>
               <Button
-                isLoading={isLoading}
+                isLoading={isPending}
                 onClick={() => {
                   if (!input) return
                   postComment({

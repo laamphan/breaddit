@@ -83,7 +83,7 @@ export const CommentVotes = ({
       {/* upvote */}
       <Button
         onClick={() => vote('UP')}
-        size='xs'
+        size='icon'
         variant='ghost'
         aria-label='upvote'
       >
@@ -102,7 +102,7 @@ export const CommentVotes = ({
       {/* downvote */}
       <Button
         onClick={() => vote('DOWN')}
-        size='xs'
+        size='icon'
         variant='ghost'
         aria-label='downvote'
       >

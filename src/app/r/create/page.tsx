@@ -15,7 +15,7 @@ const Page = () => {
   const router = useRouter()
   const { loginToast } = useCustomToast()
 
-  const { mutate: createCommunity, isLoading } = useMutation({
+  const { mutate: createCommunity, isPending } = useMutation({
     mutationFn: async () => {
       const payload: CreateSubredditRequest = {
         name: input,
@@ -86,14 +86,14 @@ const Page = () => {
 
         <div className='flex justify-end gap-4'>
           <Button
-            disabled={isLoading}
-            variant='subtle'
+            disabled={isPending}
+            variant='secondary'
             onClick={() => router.back()}
           >
             Cancel
           </Button>
           <Button
-            isLoading={isLoading}
+            isLoading={isPending}
             disabled={input.length === 0}
             onClick={() => createCommunity()}
           >

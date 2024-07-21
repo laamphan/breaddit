@@ -2,13 +2,15 @@ import { Navbar } from '@/components/Navbar'
 import { Providers } from '@/components/Providers'
 import { Toaster } from '@/components/ui/Toaster'
 import { cn } from '@/lib/utils'
-import { Inter } from 'next/font/google'
+import { Inter as FontSans } from 'next/font/google'
 
 import '@/styles/globals.css'
-import "@uploadthing/react/styles.css"
+import '@uploadthing/react/styles.css'
 
-
-const inter = Inter({ subsets: ['latin'] })
+const fontSans = FontSans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+})
 
 export const metadata = {
   title: 'Breaddit',
@@ -26,13 +28,12 @@ export default function RootLayout({
     <html
       lang='en'
       className={cn(
-        'bg-white text-slate-900 antialiased light',
-        inter.className
+        'min-h-screen bg-background font-sans antialiased text-slate-900 light',
+        fontSans.className
       )}
     >
       <body className='min-h-screen pt-12 bg-slate-50 antialiased'>
         <Providers>
-          {/* @ts-expect-error Server Component */}
           <Navbar />
 
           {authModal}

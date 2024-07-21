@@ -17,13 +17,12 @@ type ReplyComment = Comment & {
 
 interface CommentsSectionProps {
   postId: string
-  comments: ExtendedComment[]
 }
 
 export const CommentsSection = async ({ postId }: CommentsSectionProps) => {
   const session = await getAuthSession()
 
-  const comments = await db.comment.findMany({
+  const comments: ExtendedComment[] = await db.comment.findMany({
     where: {
       postId: postId,
       replyToId: null, // only fetch top-level comments
