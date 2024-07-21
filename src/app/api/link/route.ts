@@ -11,8 +11,7 @@ export async function GET(req: Request) {
   const res = await axios.get(href)
 
   const titleMatch = res.data.match(/<title>(.*?)<\/title>/)
-  const title =
-    titleMatch[1] && titleMatch[1].length > 0 ? titleMatch[1] : 'Embed Link'
+  const title = titleMatch[1] ? titleMatch[1] : 'Embed Link'
 
   const descriptionMatch = res.data.match(
     /<meta name="description" content="(.*?)"/
