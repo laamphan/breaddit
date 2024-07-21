@@ -1,5 +1,6 @@
 'use client'
 
+import CustomEmbedRenderer from '@/components/renderers/CustomEmbedRenderer'
 import dynamic from 'next/dynamic'
 import CustomCodeRenderer from './renderers/CustomCodeRenderer'
 import CustomImageRenderer from './renderers/CustomImageRenderer'
@@ -23,6 +24,7 @@ const style = {
 const renderers = {
   image: CustomImageRenderer,
   code: CustomCodeRenderer,
+  embed: CustomEmbedRenderer,
 }
 
 export const EditorOutput = ({ content }: EditorOutputProps) => {
