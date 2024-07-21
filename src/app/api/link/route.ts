@@ -10,9 +10,9 @@ export async function GET(req: Request) {
 
   const res = await axios.get(href)
 
-  // Parse the HTML using regular expressions
   const titleMatch = res.data.match(/<title>(.*?)<\/title>/)
-  const title = titleMatch ? titleMatch[1] : ''
+  const title =
+    titleMatch[1] && titleMatch[1].length > 0 ? titleMatch[1] : 'Embed Link'
 
   const descriptionMatch = res.data.match(
     /<meta name="description" content="(.*?)"/
@@ -22,7 +22,6 @@ export async function GET(req: Request) {
   const imageMatch = res.data.match(/<meta property="og:image" content="(.*?)"/)
   const imageUrl = imageMatch ? imageMatch[1] : ''
 
-  // Return the data in the format required by the editor tool
   return new Response(
     JSON.stringify({
       success: 1,
