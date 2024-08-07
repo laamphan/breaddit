@@ -80,41 +80,61 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
   })
 
   return (
-    <form
-      className={cn(className)}
-      onSubmit={handleSubmit((e) => updateUsername(e))}
-      {...props}
-    >
+    <>
+      <form
+        className={cn(className)}
+        onSubmit={handleSubmit((e) => updateUsername(e))}
+        {...props}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle>Your username</CardTitle>
+            <CardDescription>
+              Please enter a display name you are comfortable with.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className='relative grid gap-1'>
+              <div className='absolute top-0 left-0 w-8 h-10 grid place-items-center'>
+                <span className='text-sm text-zinc-400'>u/</span>
+              </div>
+              <Label className='sr-only' htmlFor='name'>
+                Name
+              </Label>
+              <Input
+                id='name'
+                className='w-[400px] pl-6'
+                size={32}
+                {...register('name')}
+              />
+              {errors?.name && (
+                <p className='px-1 text-xs text-red-600'>
+                  {errors.name.message}
+                </p>
+              )}
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button isLoading={isPending}>Change Username</Button>
+          </CardFooter>
+        </Card>
+      </form>
       <Card>
         <CardHeader>
-          <CardTitle>Your username</CardTitle>
-          <CardDescription>
-            Please enter a display name you are comfortable with.
-          </CardDescription>
+          <CardTitle>TikTok</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='relative grid gap-1'>
-            <div className='absolute top-0 left-0 w-8 h-10 grid place-items-center'>
-              <span className='text-sm text-zinc-400'>u/</span>
-            </div>
-            <Label className='sr-only' htmlFor='name'>
-              Name
-            </Label>
-            <Input
-              id='name'
-              className='w-[400px] pl-6'
-              size={32}
-              {...register('name')}
-            />
-            {errors?.name && (
-              <p className='px-1 text-xs text-red-600'>{errors.name.message}</p>
-            )}
-          </div>
+          <CardDescription>Login with TikTok to get started.</CardDescription>
+          {/* a button to login with tiktok in a pop up */}
+          <Button
+            onClick={() => {
+              window.open('/api/tiktok', 'tiktok', 'width=500,height=800')
+            }}
+          >
+            Login with TikTok
+          </Button>
         </CardContent>
-        <CardFooter>
-          <Button isLoading={isPending}>Change Username</Button>
-        </CardFooter>
       </Card>
-    </form>
+    </>
   )
 }
