@@ -6,7 +6,7 @@ const Page = () => {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
         <p className="text-lg">
-          Welcome to [Your Reddit Clone Name] ("we", "us", "our"). We are committed to protecting your privacy and ensuring that your personal information is handled securely and responsibly. This Privacy Policy explains how we collect, use, and share information when you use our website and services, including signing in with Google and TikTok and using TikTok features to post content on your behalf. By using [Your Reddit Clone Name], you agree to the collection and use of information in accordance with this policy.
+          Welcome to breaddit.vercel.app (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;). We are committed to protecting your privacy and ensuring that your personal information is handled securely and responsibly. This Privacy Policy explains how we collect, use, and share information when you use our website and services, including signing in with Google and TikTok and using TikTok features to post content on your behalf. By using breaddit.vercel.app, you agree to the collection and use of information in accordance with this policy.
         </p>
       </section>
 
@@ -71,7 +71,7 @@ const Page = () => {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">TikTok Integration</h2>
         <p className="text-lg">
-          If you sign in with TikTok or use TikTok-related features on our platform, including posting content on TikTok, we may share some of your information with TikTok. This sharing is subject to TikTok’s privacy policy and terms of service. We encourage you to review TikTok’s policies to understand how they handle your information.
+          If you sign in with TikTok or use TikTok-related features on our platform, including posting content on TikTok, we may share some of your information with TikTok. This sharing is subject to TikTok&#39;s privacy policy and terms of service. We encourage you to review TikTok&#39;s policies to understand how they handle your information.
         </p>
       </section>
 
