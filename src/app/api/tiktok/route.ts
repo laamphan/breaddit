@@ -8,7 +8,8 @@ export async function GET(req: Request) {
       return new Response('Unauthorized', { status: 401 })
     }
 
-    const url = `https://open-api.tiktok.com/platform/oauth/connect/?client_key=${
+    const csrfState = Math.random().toString(36).substring(2)
+    const url = `https://www.tiktok.com/v2/auth/authorize/?client_key=${
       process.env.TIKTOK_CLIENT_KEY
     }&scope=user.info.basic&response_type=code&redirect_uri=${encodeURIComponent(
       process.env.TIKTOK_REDIRECT_URI!
@@ -16,7 +17,17 @@ export async function GET(req: Request) {
 
     console.log('Redirecting to Tiktok', url)
 
-    return Response.redirect(url, 302)
+    const headers = new Headers()
+    headers.append(
+      'Set-Cookie',
+      `csrfState=${csrfState}; Max-Age=60; Path=/; HttpOnly; Secure`
+    )
+    headers.append('Location', url)
+
+    return new Response(null, {
+      status: 302,
+      headers: headers,
+    })
   } catch (error) {
     return new Response('Error signing in with Tiktok', {
       status: 500,
