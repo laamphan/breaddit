@@ -1,50 +1,3 @@
-// Privacy Policy
-
-// Effective Date: [Insert Date]
-
-// [Your Reddit Clone Name] ("we," "our," "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and services (collectively, the "Services").
-
-// 1. Information We Collect
-// 1.1. Personal Information: When you sign in using TikTok or post content to TikTok through our platform, we may receive personal information from TikTok, including your public profile information and email address. We may also collect personal information directly from you when you register or interact with our Services.
-
-// 1.2. Usage Data: We collect information about your interaction with our Services, including IP addresses, browser types, access times, and pages visited.
-
-// 1.3. Cookies and Tracking Technologies: We use cookies and similar tracking technologies to enhance your experience and gather usage data. You can manage your cookie preferences through your browser settings.
-
-// 2. Use of Information
-// 2.1. Service Provision: We use your information to provide, operate, and maintain our Services.
-
-// 2.2. Personalization: We may use your information to personalize your experience and tailor content and recommendations to your interests.
-
-// 2.3. Communication: We use your contact information to communicate with you, including for customer support, updates, and marketing purposes. You can opt-out of marketing communications at any time.
-
-// 2.4. Analytics: We analyze usage data to understand how users interact with our Services and improve their functionality.
-
-// 2.5. Content Posting: We use your information to facilitate the posting of content to your TikTok account as authorized by you.
-
-// 3. Sharing of Information
-// 3.1. Service Providers: We may share your information with third-party service providers who perform services on our behalf, such as hosting, analytics, and customer support.
-
-// 3.2. Legal Requirements: We may disclose your information if required to do so by law, or if we believe such disclosure is necessary to comply with legal processes or protect our rights and interests.
-
-// 3.3. Business Transfers: In the event of a merger, acquisition, or other business transaction, we may transfer your information as part of the transaction.
-
-// 4. Data Security
-// We implement reasonable measures to protect your information from unauthorized access, use, or disclosure. However, no security system is impenetrable, and we cannot guarantee the absolute security of your information.
-
-// 5. Data Retention
-// We retain your personal information only as long as necessary to fulfill the purposes for which it was collected or as required by law.
-
-// 6. Your Rights
-// Depending on your jurisdiction, you may have certain rights regarding your personal information, including the right to access, correct, or delete your data. You may also have the right to restrict or object to certain processing activities.
-
-// 7. Changes to This Privacy Policy
-// We may update this Privacy Policy from time to time. We will notify you of significant changes by posting the updated Privacy Policy on our website. Your continued use of our Services after such changes constitutes your acceptance of the new Privacy Policy.
-
-// 8. Contact Us
-// If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at [Your Contact Information].
-
-
 const Page = () => {
   return (
     <div className="container mx-auto px-4 py-8">
@@ -147,7 +100,7 @@ const Page = () => {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Children's Privacy</h2>
+        <h2 className="text-2xl font-semibold mb-4">Children&#39;s Privacy</h2>
         <p className="text-lg">
           Our Services are not intended for children under 13. We do not knowingly collect personal information from children under 13. If we become aware that we have collected such information, we will take steps to delete it.
         </p>
