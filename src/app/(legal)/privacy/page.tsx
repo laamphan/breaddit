@@ -1,6 +1,6 @@
 const Page = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="p-6 max-w-3xl mx-auto bg-white shadow-lg rounded-lg">
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
 
       <section className="mb-8">

@@ -50,6 +50,17 @@ export default async function Home() {
               </Link>
             </dl>
           </div>
+          <div>
+            {/* tos and privacy policy */}
+            <div className='rounded-lg border border-gray-200 px-6 py-4 mt-4'>
+              <Link href='/tos'>
+                <p className='py-1'>Terms of Service</p>
+              </Link>
+              <Link href='/privacy'>
+                <p className='py-1'>Privacy Policy</p>
+              </Link>
+            </div>
+          </div>
           {session ? (
             <div className='rounded-lg border border-gray-200 px-6 py-4 mt-4 hidden md:block'>
               <p className='font-semibold py-1 flex items-center gap-1.5'>
