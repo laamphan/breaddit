@@ -22,28 +22,37 @@ export const GET = async (req: Request) => {
       redirect_uri: process.env.TIKTOK_REDIRECT_URI!,
     })
 
-    const response = await axios.post(
-      `https://open-api.tiktok.com/oauth/access_token/?${params.toString()}`,
-      null,
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      }
-    )
-
-    if (response.data.error) {
-      console.log('TikTok API error:', response.data)
-      return new Response(
-        `Error from TikTok: ${response.data.error_description}`,
-        { status: 400 }
+    try {
+      const response = await axios.post(
+        `https://open-api.tiktok.com/oauth/access_token/`,
+        params.toString(),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
       )
+
+      if (response.data.error) {
+        console.log('TikTok API error:', response.data)
+        return new Response(
+          `Error from TikTok: ${response.data.error_description}`,
+          { status: 400 }
+        )
+      }
+
+      console.log('TikTok response', response.data)
+      return new Response('Success', { status: 200 })
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log('TikTok API Error Response:', error.response.data)
+        return new Response(
+          `TikTok API error: ${error.response.data.message}`,
+          { status: 400 }
+        )
+      }
+      throw error
     }
-
-    console.log('TikTok response', response.data)
-    return new Response('Success', { status: 200 })
-
-    // Handle the response and save the access token
   } catch (error) {
     console.log('Error signing in with TikTok:', error)
     return new Response('Error signing in with TikTok', {
