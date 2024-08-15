@@ -24,7 +24,7 @@ export const GET = async (req: Request) => {
 
     try {
       const response = await axios.post(
-        `https://open-api.tiktok.com/oauth/access_token/`,
+        `https://open.tiktokapis.com/v2/oauth/token/`,
         params.toString(),
         {
           headers: {
