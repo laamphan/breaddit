@@ -17,7 +17,7 @@ export const GET = async (req: Request) => {
         client_secret: process.env.TIKTOK_CLIENT_SECRET,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: process.env.TIKTOK_REDIRECT_URI,
+        redirect_uri: encodeURIComponent(process.env.TIKTOK_REDIRECT_URI!),
       },
       {
         headers: {
