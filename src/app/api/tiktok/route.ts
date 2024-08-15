@@ -13,7 +13,7 @@ export async function GET(req: Request) {
       process.env.TIKTOK_CLIENT_KEY
     }&scope=user.info.basic,video.publish,video.upload&response_type=code&redirect_uri=${encodeURIComponent(
       process.env.TIKTOK_REDIRECT_URI!
-    )}`
+    )}&state=${csrfState}`
 
     const headers = new Headers()
     headers.append(
