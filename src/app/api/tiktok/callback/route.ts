@@ -1,4 +1,5 @@
 import { getAuthSession } from '@/lib/auth'
+import { db } from '@/lib/db'
 import axios from 'axios'
 
 export const GET = async (req: Request) => {
@@ -42,6 +43,21 @@ export const GET = async (req: Request) => {
       }
 
       console.log('TikTok response', response.data)
+
+      const account = await db.account.findFirst({
+        where: { userId: session.user.id },
+      })
+      if (!account) {
+        return new Response('Account not found', { status: 404 })
+      }
+
+      await db.account.update({
+        where: { id: account.id },
+        data: {
+          tiktok_token: response.data.access_token,
+        },
+      })
+
       return new Response('Success', { status: 200 })
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
