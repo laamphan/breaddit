@@ -18,6 +18,11 @@ export const GET = async (req: Request) => {
         code,
         grant_type: 'authorization_code',
         redirect_uri: process.env.TIKTOK_REDIRECT_URI,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       }
     )
 
