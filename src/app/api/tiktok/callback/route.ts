@@ -13,11 +13,11 @@ export const GET = async (req: Request) => {
     const response = await axios.post(
       'https://open-api.tiktok.com/oauth/access_token/',
       {
-        client_key: process.env.CLIENT_ID,
-        client_secret: process.env.CLIENT_SECRET,
+        client_key: process.env.TIKTOK_CLIENT_KEY,
+        client_secret: process.env.TIKTOK_CLIENT_SECRET,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: process.env.REDIRECT_URI,
+        redirect_uri: process.env.TIKTOK_REDIRECT_URI,
       }
     )
 
@@ -26,6 +26,7 @@ export const GET = async (req: Request) => {
 
     // Handle the response and save the access token
   } catch (error) {
+    console.log('Error signing in with TikTok:', error)
     return new Response('Error signing in with Tiktok', {
       status: 500,
     })

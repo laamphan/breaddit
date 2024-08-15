@@ -119,22 +119,6 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
           </CardFooter>
         </Card>
       </form>
-      <Card>
-        <CardHeader>
-          <CardTitle>TikTok</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CardDescription>Login with TikTok to get started.</CardDescription>
-          {/* a button to login with tiktok in a pop up */}
-          <Button
-            onClick={() => {
-              window.open('/api/tiktok', 'tiktok', 'width=500,height=800')
-            }}
-          >
-            Login with TikTok
-          </Button>
-        </CardContent>
-      </Card>
     </>
   )
 }

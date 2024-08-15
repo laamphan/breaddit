@@ -11,11 +11,9 @@ export async function GET(req: Request) {
     const csrfState = Math.random().toString(36).substring(2)
     const url = `https://www.tiktok.com/v2/auth/authorize/?client_key=${
       process.env.TIKTOK_CLIENT_KEY
-    }&scope=user.info.basic&response_type=code&redirect_uri=${encodeURIComponent(
+    }&scope=user.info.basic,video.publish,video.upload&response_type=code&redirect_uri=${encodeURIComponent(
       process.env.TIKTOK_REDIRECT_URI!
     )}`
-
-    console.log('Redirecting to Tiktok', url)
 
     const headers = new Headers()
     headers.append(

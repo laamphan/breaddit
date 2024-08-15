@@ -1,6 +1,7 @@
-import { UserNameForm } from '@/components/UserNameForm'
-import { authOptions, getAuthSession } from '@/lib/auth'
-import { redirect } from 'next/navigation'
+import { UserNameForm } from '@/components/UserNameForm';
+import { authOptions, getAuthSession } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import TiktokConnectForm from '../../components/TiktokConnectForm';
 
 export const metadata = {
   title: 'Settings',
@@ -25,6 +26,7 @@ const page = async () => {
               username: session.user.username || '',
             }}
           />
+          <TiktokConnectForm />
         </div>
       </div>
     </div>
