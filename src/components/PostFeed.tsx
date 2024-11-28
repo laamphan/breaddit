@@ -6,7 +6,6 @@ import { useIntersection } from '@mantine/hooks'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { Loader2 } from 'lucide-react'
-import { useSession } from 'next-auth/react'
 import { useEffect, useRef, useState } from 'react'
 import { Posts as Post } from './Post'
 
@@ -14,12 +13,14 @@ interface PostFeedProps {
   initialPosts: ExtendedPost[]
   subredditName?: string
   subscribedSubreddits?: string[]
+  userId?: string
 }
 
 export const PostFeed = ({
   initialPosts,
   subredditName,
   subscribedSubreddits,
+  userId,
 }: PostFeedProps) => {
   // later assign this ref to (last) post element
   const lastPostRef = useRef<HTMLElement>(null)
@@ -37,8 +38,6 @@ export const PostFeed = ({
     root: lastPostRef.current,
     threshold: 1,
   })
-
-  const { data: session } = useSession()
 
   const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery<
     ExtendedPost[],
@@ -111,9 +110,7 @@ export const PostFeed = ({
           return acc
         }, 0)
 
-        const currentVote = post.votes.find(
-          (vote) => vote.userId === session?.user.id
-        )
+        const currentVote = post.votes.find((vote) => vote.userId === userId)
 
         if (index === posts.length - 1) {
           // assign ref to (last) post element
@@ -149,7 +146,7 @@ export const PostFeed = ({
                 subredditId={post.subreddit.id}
                 votesAmt={votesAmt}
                 currentVote={currentVote}
-                userId={session?.user.id}
+                userId={userId}
                 subscribed={
                   subscribedSubreddits
                     ? subscribedSubreddits.indexOf(post.subreddit.id) > -1

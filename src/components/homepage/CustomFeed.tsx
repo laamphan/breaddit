@@ -38,5 +38,5 @@ export const CustomFeed = async () => {
     take: INFINITE_SCROLLING_PAGINATION_RESULTS,
   })
 
-  return <PostFeed initialPosts={posts} />
+  return <PostFeed initialPosts={posts} userId={session.user.id} />
 }

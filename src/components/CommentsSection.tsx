@@ -71,6 +71,7 @@ export const CommentsSection = async ({ postId }: CommentsSectionProps) => {
                     currentVote={topLevelCommentVote}
                     votesAmt={topLevelCommentVotesAmt}
                     postId={postId}
+                    userId={session?.user.id}
                   />
                 </div>
 
@@ -98,6 +99,7 @@ export const CommentsSection = async ({ postId }: CommentsSectionProps) => {
                           currentVote={replyVote}
                           votesAmt={replyVotesAmt}
                           postId={postId}
+                          userId={session?.user.id}
                         />
                       </div>
                     )
