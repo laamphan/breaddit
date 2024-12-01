@@ -28,7 +28,7 @@ export default async function Home() {
         {/* feed */}
         {session ? <CustomFeed /> : <GeneralFeed />}
         {/* subreddit info */}
-        <div className='overflow-hidden h-fit order-first md:order-last sticky top-[-14.7rem] md:top-[-15rem] lg:top-[-12.85rem]'>
+        <div className='overflow-hidden h-fit order-first md:order-last md:sticky top-[-14.7rem] md:top-[-15rem] lg:top-[-12.85rem]'>
           <div className='rounded-lg border border-gray-200 '>
             <div className='rounded-t-lg bg-emerald-100 px-6 py-4'>
               <p className='font-semibold py-3 flex items-center gap-1.5'>
